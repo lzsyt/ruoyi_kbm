@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('修改知识库')"/>
+    <th:block th:include="include :: select2-css"/>
+    <!--<th:block th:include="include :: header('文件上传')" />-->
+    <th:block th:include="include :: bootstrap-fileinput-css"/>
+</head>
+<style>
+    #file_img .fileinput-upload-button {
+        display: none;
+    }
+</style>
+<body>
+<div class="main-content">
+    <form id="form-knowledge-add" action="/system/knowledge/edit" method="post" class="form-horizontal"
+          enctype="multipart/form-data">
+        <input id="id" name="id" type="hidden" th:value="${tKnowledge.id}">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">商品名称：</label>
+                    <div class="col-sm-8">
+                        <input name="productName" th:value="${tKnowledge.productName}" id="productName"
+                               class="form-control" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">归属部门：</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" name="dataOrg" id="org">
+                            <option th:value="${tKnowledge.dataOrg}">部门</option>
+                            <option th:each="org : ${orgs}" th:value="${org.getName()}"
+                                    th:text="${org.getName()}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">商家编号：</label>
+                    <div class="col-sm-8">
+                        <input id="shopNum" th:value="${tKnowledge.shopNum}" name="shopNum" class="form-control"
+                               type="text"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">问题分类：</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" name="sort" id="sort">
+                            <option th:value="${tKnowledge.getSort()}">问题分类</option>
+                            <option th:each="sorts:${sorts}" th:value="${sorts.id}"
+                                    th:text="${sorts.sort}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">问题：</label>
+                    <div class="col-sm-8">
+                        <input id="ask" th:value="${tKnowledge.ask}" name="ask" class="form-control" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">生产厂家：</label>
+                    <div class="col-sm-8">
+                        <input id="productFactory" th:value="${tKnowledge.productFactory}" name="productFactory"
+                               class="form-control" type="text">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-xs-2 control-label">答案：</label>
+                    <div class="col-xs-10">
+                        <textarea id="answer" th:text="${tKnowledge.answer}" name="answer" maxlength="500"
+                                  class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group" id="file_img">
+                    <label class="font-noraml">文件上传</label>
+                    <div class="file-loading">
+                        <input name="file" id="file" type="file" multiple>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+        <!--图片展示-->
+        <h4 th:if="${tKnowledge.files!=null}" class="form-header h4">文件列表</h4>
+        <div class="row" th:if="${tKnowledge.files!=null}">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <div class="col-md-12" id="imglist">
+                        <div class="col-md-2" th:each="files : ${tKnowledge.files}">
+                            <div th:if="${files.fileType==1}" class="text-center">
+                                <div class="col-md-12">
+                                    <img class="image img-rounded"
+                                         th:height="200" th:width="200"
+                                         th:src="@{${files.filePath}}">
+                                </div>
+                                <div class="col-md-12">
+                                    <label th:text="${files.fileName}"></label>
+                                </div>
+                                <div class="col-md-12">
+                                    <form method="post" th:action="@{/system/knowledge/download}">
+                                        <input name="filePath" th:value="${files.filePath}" type="hidden">
+                                        <a class="btn btn-white" th:onclick="delfile([[${files.fileId}]])">删除</a>
+                                        <input class="btn btn-white" type="submit" value="下载">
+                                    </form>
+                                </div>
+                            </div>
+                            <div th:if="${files.fileType==3}" class="text-center">
+                                <div class="col-md-12">
+                                    <img class="image img-rounded"
+                                         th:height="200" th:width="200"
+                                         th:src="@{${files.filePath}}">
+                                </div>
+                                <div class="col-md-12"><label th:text="${files.fileName}"></label></div>
+                                <div class="col-md-12">
+                                    <form method="post" th:action="@{/system/knowledge/download}">
+                                        <input name="filePath" th:value="${files.filePath}" type="hidden">
+                                        <a class="btn btn-white" th:onclick="delfile([[${files.fileId}]])">删除</a>
+                                        <input class="btn btn-white" type="submit" value="下载">
+                                    </form>
+                                </div>
+                            </div>
+                            <div th:if="${files.fileType==2}" class="text-center">
+                                <video controls="controls" th:src="@{${files.filePath}}"></video>
+                                <div class="col-md-12"><label th:text="${files.fileName}"></label></div>
+                                <div class="col-md-12">
+                                    <form method="post" th:action="@{/system/knowledge/download}">
+                                        <input name="filePath" th:value="${files.filePath}" type="hidden">
+                                        <a class="btn btn-white" th:onclick="delfile([[${files.fileId}]])">删除</a>
+                                        <input class="btn btn-white" type="submit" value="下载">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    <!--<div class="row" th:if="!${tKnowledge.getVideoPath()==null or tKnowledge.getDocPath()==null}">-->
+    <!--<div class="col-sm-12">-->
+    <!--<div class="form-group">-->
+    <!--<div class="col-xs-10">-->
+    <!--<div class="col-md-12" th:if="!${tKnowledge.getVideoPath().isEmpty()}">-->
+    <!--<form  method="get" th:action="@{/system/knowledge/download}">-->
+    <!--<input name="filePath" th:value="${tKnowledge.getVideoPath()}" type="hidden">-->
+    <!--<input type="submit" value="下载视频">-->
+    <!--</form>-->
+    <!--</div>-->
+    <!--<div class="col-md-12" th:if="!${tKnowledge.getDocPath().isEmpty()}">-->
+    <!--<form  method="get" th:action="@{/system/knowledge/download}">-->
+    <!--<input name="filePath" th:value="${tKnowledge.getDocPath()}" type="hidden">-->
+    <!--<input type="submit" value="下载文档">-->
+    <!--</form>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+</div>
+
+<div class="row">
+    <div class="col-sm-offset-5 col-sm-10">
+        <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>保 存
+        </button>&nbsp;
+        <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭
+        </button>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: select2-js"/>
+<th:block th:include="include :: bootstrap-fileinput-js"/>
+<script type="text/javascript">
+    var prefix = ctx + "system/knowledge";
+
+
+    function delfile(data) {
+        $.post(prefix + "/delfile", {"id": data}, function (data) {
+            if (data == '0') {
+                // $.modal.alertSuccess("操作成功");
+                document.location.reload();
+            } else {
+                // $.modal.alertError("操作失败");
+                document.location.reload();
+            }
+        });
+
+    }
+
+
+    $(document).ready(function () {
+        $("#file").fileinput({
+            'theme': 'explorer-fas',
+            'uploadUrl': '/common/upload',
+            overwriteInitial: false,
+            initialPreviewAsData: false
+        });
+
+    });
+
+    function submitHandler() {
+        var url = prefix + "/edit";
+        var id = $("#id").val();
+        var org = $("#org").val();
+        var productName = $("#productName").val();
+        var shopNum = $("#shopNum").val();
+        var sort = $("#sort").val();
+        var productFactory = $("#productFactory").val();
+        var ask = $("#ask").val();
+        var answer = $("#answer").val();
+        var files = document.getElementById("file").files;
+
+        var formFile = new FormData();
+        formFile.append("id", id);
+        formFile.append("dataOrg", org);
+        formFile.append("productName", productName);
+        formFile.append("shopNum", shopNum);
+        formFile.append("sort", sort);
+        formFile.append("productFactory", productFactory);
+        formFile.append("ask", ask);
+        formFile.append("answer", answer);
+        for (var i = 0; i < files.length; i++) {
+            formFile.append('file', files[i])
+        }
+
+        $.ajax({
+            type: "POST",
+            dataType: "json",//服务器返回的数据类型
+            url: url,
+            data: formFile,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (typeof callback == "function") {
+                    callback(result);
+                }
+                $.operate.successTabCallback(result);
+            },
+            error: function () {
+                alert("异常！");
+            }
+        });
+    }
+</script>
+</body>
+</html>

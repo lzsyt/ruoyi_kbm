@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('新增知识库')"/>
+    <th:block th:include="include :: select2-css"/>
+    <!--<th:block th:include="include :: header('文件上传')" />-->
+    <th:block th:include="include :: bootstrap-fileinput-css"/>
+</head>
+<style>
+    #file_img .fileinput-upload-button {
+        display: none;
+    }
+</style>
+<body>
+<div class="main-content">
+    <form id="form-knowledge-add" action="/system/knowledge/add" method="post" class="form-horizontal"
+          enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">商品名称：</label>
+                    <div class="col-sm-8">
+                        <input name="productName" th:value="${tKnowledge.productName}" id="productName"
+                               class="form-control" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">归属部门：</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" name="dataOrg" id="org">
+                            <option th:value="${tKnowledge.dataOrg}">部门</option>
+                            <option th:each="org : ${orgs}" th:value="${org.getName()}"
+                                    th:text="${org.getName()}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">商家编号：</label>
+                    <div class="col-sm-8">
+                        <input id="shopNum" th:value="${tKnowledge.shopNum}" name="shopNum" class="form-control"
+                               type="text"/>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">问题分类：</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" name="sort" id="sort">
+                            <option th:value="${tKnowledge.sort}">问题分类</option>
+                            <option th:each="sorts:${sorts}" th:value="${sorts.id}"
+                                    th:text="${sorts.sort}">
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">问题：</label>
+                    <div class="col-sm-8">
+                        <input id="ask" th:value="${tKnowledge.ask}" name="ask" class="form-control" type="text">
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-4 control-label">生产厂家：</label>
+                    <div class="col-sm-8">
+                        <input id="productFactory" th:value="${tKnowledge.productFactory}" name="productFactory"
+                               class="form-control" type="text">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <label class="col-xs-2 control-label">答案：</label>
+                    <div class="col-xs-10">
+                        <textarea id="answer" th:text="${tKnowledge.answer}" name="answer" maxlength="500"
+                                  class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h4 class="form-header h4">文件信息</h4>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group" id="file_img">
+                    <label class="font-noraml">文件上传</label>
+                    <div class="file-loading">
+                        <input name="file" id="file" type="file" multiple>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="row">
+    <div class="col-sm-offset-5 col-sm-10">
+        <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>保 存
+        </button>&nbsp;
+        <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭
+        </button>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<th:block th:include="include :: select2-js"/>
+<th:block th:include="include :: bootstrap-fileinput-js"/>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#file").fileinput({
+            'theme': 'explorer-fas',
+            'uploadUrl': '/common/upload',
+            overwriteInitial: false,
+            initialPreviewAsData: false
+        });
+    });
+
+
+    var prefix = ctx + "system/knowledge";
+
+    function submitHandler() {
+        var url = prefix + "/add";
+
+        var org = $("#org").val();
+        var productName = $("#productName").val();
+        var shopNum = $("#shopNum").val();
+        var sort = $("#sort").val();
+        var productFactory = $("#productFactory").val();
+        var ask = $("#ask").val();
+        var answer = $("#answer").val();
+        var files = document.getElementById("file").files;
+
+        var formFile = new FormData();
+        formFile.append("dataOrg", org);
+        formFile.append("productName", productName);
+        formFile.append("shopNum", shopNum);
+        formFile.append("sort", sort);
+        formFile.append("productFactory", productFactory);
+        formFile.append("ask", ask);
+        formFile.append("answer", answer);
+        for (var i = 0; i < files.length; i++) {
+            formFile.append('file', files[i])
+        }
+
+        $.ajax({
+            type: "POST",
+            dataType: "json",//服务器返回的数据类型
+            url: url,
+            data: formFile,
+            cache: false,
+            processData: false,
+            contentType: false,
+            success: function (result) {
+                if (typeof callback == "function") {
+                    callback(result);
+                }
+                $.operate.successTabCallback(result);
+            },
+            error: function () {
+                alert("异常！");
+            }
+        });
+    }
+</script>
+</body>
+</html>
