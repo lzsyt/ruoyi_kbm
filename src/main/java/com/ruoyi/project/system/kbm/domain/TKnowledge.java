@@ -79,6 +79,17 @@ public class TKnowledge extends BaseEntity
 
     private List<TKnownledgeFile> files;
 
+    private KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap;
+
+
+    public KnowledgeGoodlinkCatMap getKnowledgeGoodlinkCatMap() {
+        return knowledgeGoodlinkCatMap;
+    }
+
+    public void setKnowledgeGoodlinkCatMap(KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap) {
+        this.knowledgeGoodlinkCatMap = knowledgeGoodlinkCatMap;
+    }
+
     public List<TKnownledgeFile> getFiles() {
         return files;
     }

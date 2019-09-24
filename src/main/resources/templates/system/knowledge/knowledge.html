@@ -2,6 +2,7 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <th:block th:include="include :: header('知识库列表')"/>
+    <th:block th:include="include :: layout-latest-css" />
 </head>
 <body class="gray-bg">
 <div class="container-div">
@@ -20,7 +21,7 @@
                         </li>
                         <li>
                             <p>部门：</p>
-                            <select class="form-control" name="dataOrg" id="dataOrg">
+                            <select name="dataOrg" >
                                 <option value="">部门</option>
                                 <option th:each="org : ${orgs}" th:value="${org.getName()}"
                                         th:text="${org.getName()}">
@@ -137,7 +138,8 @@
                 },
                 {
                     field: 'answer',
-                    title: '回答'
+                    title: '回答',
+                    width: 300,
                 },
                 {
                     field: 'dataOrg',

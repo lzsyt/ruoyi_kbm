@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.kbm.mapper.KnowledgeGoodlinkCatMapMapper">
+    
+    <resultMap type="com.ruoyi.project.system.kbm.domain.KnowledgeGoodlinkCatMap" id="KnowledgeGoodlinkCatMapResult">
+        <result property="knowledgeId"    column="knowledge_id"    />
+        <result property="goodslinkId"    column="goodslink_id"    />
+        <result property="catId"    column="cat_id"    />
+        <result property="shopId"    column="shop_id"    />
+        <result property="goodlinkName"    column="goodlinkname"    />
+        <result property="catName"    column="catname"    />
+        <result property="shopName"    column="shopname"    />
+    </resultMap>
+
+    <sql id="selectKnowledgeGoodlinkCatMapVo">
+        select knowledge_id, goodslink_id, cat_id, shop_id from knowledge_goodlink_cat_map
+    </sql>
+
+    <select id="selectKnowledgeGoodlinkCatMapList" parameterType="com.ruoyi.project.system.kbm.domain.KnowledgeGoodlinkCatMap" resultMap="KnowledgeGoodlinkCatMapResult">
+        <include refid="selectKnowledgeGoodlinkCatMapVo"/>
+        <where>  
+            <if test="knowledgeId != null  and knowledgeId != ''"> and knowledge_id = #{knowledgeId}</if>
+            <if test="goodslinkId != null "> and goodslink_id = #{goodslinkId}</if>
+            <if test="catId != null "> and cat_id = #{catId}</if>
+            <if test="shopId != null "> and shop_id = #{shopId}</if>
+        </where>
+    </select>
+    
+    <select id="selectKnowledgeGoodlinkCatMapById" parameterType="String" resultMap="KnowledgeGoodlinkCatMapResult">
+        SELECT
+        	knowledge_goodlink_cat_map.*,t_shop.shop_name as shopname,t_good_cat.name as catname,t_goods_link.title as goodlinkname
+        FROM
+        	knowledge_goodlink_cat_map
+        	INNER JOIN t_goods_link ON knowledge_goodlink_cat_map.goodslink_id = t_goods_link.num_iid
+        	INNER JOIN t_good_cat on t_good_cat.cid = knowledge_goodlink_cat_map.cat_id
+        	INNER JOIN t_shop on t_shop.id=knowledge_goodlink_cat_map.shop_id
+        where knowledge_goodlink_cat_map.knowledge_id = #{knowledgeId} limit 1
+    </select>
+        
+    <insert id="insertKnowledgeGoodlinkCatMap" parameterType="com.ruoyi.project.system.kbm.domain.KnowledgeGoodlinkCatMap">
+        insert into knowledge_goodlink_cat_map
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="knowledgeId != null  and knowledgeId != ''">knowledge_id,</if>
+            <if test="goodslinkId != null ">goodslink_id,</if>
+            <if test="catId != null ">cat_id,</if>
+            <if test="shopId != null ">shop_id,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="knowledgeId != null  and knowledgeId != ''">#{knowledgeId},</if>
+            <if test="goodslinkId != null ">#{goodslinkId},</if>
+            <if test="catId != null ">#{catId},</if>
+            <if test="shopId != null ">#{shopId},</if>
+         </trim>
+    </insert>
+
+    <update id="updateKnowledgeGoodlinkCatMap" parameterType="com.ruoyi.project.system.kbm.domain.KnowledgeGoodlinkCatMap">
+        update knowledge_goodlink_cat_map
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="goodslinkId != null ">goodslink_id = #{goodslinkId},</if>
+            <if test="catId != null ">cat_id = #{catId},</if>
+            <if test="shopId != null ">shop_id = #{shopId},</if>
+        </trim>
+        where knowledge_id = #{knowledgeId}
+    </update>
+
+    <delete id="deleteKnowledgeGoodlinkCatMapById" parameterType="String">
+        delete from knowledge_goodlink_cat_map where knowledge_id = #{knowledgeId}
+    </delete>
+
+    <delete id="deleteKnowledgeGoodlinkCatMapByIds" parameterType="String">
+        delete from knowledge_goodlink_cat_map where knowledge_id in 
+        <foreach item="knowledgeId" collection="array" open="(" separator="," close=")">
+            #{knowledgeId}
+        </foreach>
+    </delete>
+    
+</mapper>

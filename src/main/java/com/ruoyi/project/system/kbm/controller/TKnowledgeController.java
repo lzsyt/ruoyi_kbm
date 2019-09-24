@@ -1,19 +1,14 @@
 package com.ruoyi.project.system.kbm.controller;
 
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.framework.aspectj.lang.annotation.Log;
 import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
 import com.ruoyi.framework.web.controller.BaseController;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.framework.web.page.TableDataInfo;
-import com.ruoyi.project.system.kbm.domain.TKnowledge;
-import com.ruoyi.project.system.kbm.domain.TKnownledgeFile;
-import com.ruoyi.project.system.kbm.service.ITKnowledgeService;
-import com.ruoyi.project.system.kbm.service.ITKnownledgeFileService;
-import com.ruoyi.project.system.kbm.service.ITKnownledgeSortService;
-import com.ruoyi.project.system.kbm.service.ITOrgService;
+import com.ruoyi.project.system.kbm.domain.*;
+import com.ruoyi.project.system.kbm.service.*;
+import com.ruoyi.project.system.kbm.service.impl.TShopServiceImpl;
 import org.apache.commons.io.FileUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +21,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -51,6 +47,16 @@ public class TKnowledgeController extends BaseController {
     @Autowired
     private ITKnownledgeFileService knownledgeFileService;
 
+    @Autowired
+    private ITShopService itShopService;
+
+    @Autowired
+    private ITGoodsLinkService tGoodsLinkService;
+
+    @Autowired
+    private ITSellerCatService tSellerCatService;
+
+
     @RequiresPermissions("system:knowledge:view")
     @GetMapping()
     public String knowledge(ModelMap modelMap) {
@@ -69,32 +75,21 @@ public class TKnowledgeController extends BaseController {
 
         startPage();
         List<TKnowledge> tKnowledgeList = tKnowledgeService.selectTKnowledgeList(tKnowledge);
-        for (TKnowledge knowledge:tKnowledgeList) {
-            if (knowledge.getFiles() != null && knowledge.getFiles().size() != 0) {
-                for (TKnownledgeFile file : knowledge.getFiles()) {
-                    if (file.getFileType() == 1L) {
-                        knowledge.setImagePath(file.getFilePath());
-                        break;
-                    }
-                }
-            }
-
-        }
-
         return getDataTable(tKnowledgeList);
     }
 
-    /**
-     * 导出知识库列表
-     */
-    @RequiresPermissions("system:knowledge:export")
-    @PostMapping("/export")
-    @ResponseBody
-    public AjaxResult export(TKnowledge tKnowledge) {
-        List<TKnowledge> list = tKnowledgeService.selectTKnowledgeList(tKnowledge);
-        ExcelUtil<TKnowledge> util = new ExcelUtil<TKnowledge>(TKnowledge.class);
-        return util.exportExcel(list, "knowledge");
-    }
+//
+//    /**
+//     * 导出知识库列表
+//     */
+//    @RequiresPermissions("system:knowledge:export")
+//    @PostMapping("/export")
+//    @ResponseBody
+//    public AjaxResult export(TKnowledge tKnowledge) {
+//        List<TKnowledge> list = tKnowledgeService.selectTKnowledgeList(tKnowledge);
+//        ExcelUtil<TKnowledge> util = new ExcelUtil<TKnowledge>(TKnowledge.class);
+//        return util.exportExcel(list, "knowledge");
+//    }
 
     /**
      * 新增知识库
@@ -103,6 +98,9 @@ public class TKnowledgeController extends BaseController {
     public String add(ModelMap modelMap) {
         modelMap.put("sorts", tKnownledgeSortService.selectTKnownledgeSortList(null));
         modelMap.put("orgs", tOrgService.getChild(tOrgService.selectTOrgList(null)));
+        modelMap.put("tshop", itShopService.selectTShopList(null));
+        modelMap.put("goodlink", tGoodsLinkService.selectTGoodsLinkList(new TGoodsLink()));
+        modelMap.put("goodcat", tSellerCatService.selectTSellerCatList(new TSellerCat()));
         modelMap.put("tKnowledge", tKnowledgeService.selectTKnowledgeRecent());
         return prefix + "/add";
     }
@@ -121,6 +119,9 @@ public class TKnowledgeController extends BaseController {
                               @RequestParam(value = "ask", required = false) String ask,
                               @RequestParam(value = "answer", required = false) String answer,
                               @RequestParam(value = "dataOrg", required = false) String dataOrg,
+                              @RequestParam(value = "catId", required = false) String catId,
+                              @RequestParam(value = "shopId", required = false) String shopid,
+                              @RequestParam(value = "goodslinkId", required = false) String goodslinkId,
                               @RequestParam("file") MultipartFile[] file) {
         TKnowledge tKnowledge = new TKnowledge();
 
@@ -131,7 +132,17 @@ public class TKnowledgeController extends BaseController {
         tKnowledge.setAsk(ask);
         tKnowledge.setAnswer(answer);
         tKnowledge.setDataOrg(dataOrg);
-
+        KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap = new KnowledgeGoodlinkCatMap();
+        if (shopid != null) {
+            knowledgeGoodlinkCatMap.setShopId(Integer.valueOf(shopid));
+        }
+        if (goodslinkId != null) {
+            knowledgeGoodlinkCatMap.setGoodslinkId(Long.valueOf(goodslinkId));
+        }
+        if (catId != null) {
+            knowledgeGoodlinkCatMap.setCatId(Long.valueOf(catId));
+        }
+        tKnowledge.setKnowledgeGoodlinkCatMap(knowledgeGoodlinkCatMap);
         return toAjax(tKnowledgeService.insertTKnowledge(tKnowledge, file));
     }
 
@@ -141,10 +152,12 @@ public class TKnowledgeController extends BaseController {
      */
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") String id, ModelMap mmap) {
-        TKnowledge tKnowledge = tKnowledgeService.selectTKnowledgeById(id);
-        mmap.put("tKnowledge", tKnowledge);
+        mmap.put("tKnowledge", tKnowledgeService.selectTKnowledgeById(id));
         mmap.put("sorts", tKnownledgeSortService.selectTKnownledgeSortList(null));
         mmap.put("orgs", tOrgService.getChild(tOrgService.selectTOrgList(null)));
+        mmap.put("tshop", itShopService.selectTShopList(null));
+        mmap.put("goodlink", tGoodsLinkService.selectTGoodsLinkList(new TGoodsLink()));
+        mmap.put("goodcat", tSellerCatService.selectTSellerCatList(new TSellerCat()));
         return prefix + "/edit";
     }
 
@@ -155,7 +168,9 @@ public class TKnowledgeController extends BaseController {
     @Log(title = "知识库", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
-    public AjaxResult editSave(TKnowledge tKnowledge, MultipartFile[] file) {
+    public AjaxResult editSave(TKnowledge tKnowledge,KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap,
+                               MultipartFile[] file) {
+        tKnowledge.setKnowledgeGoodlinkCatMap(knowledgeGoodlinkCatMap);
         return toAjax(tKnowledgeService.updateTKnowledge(tKnowledge, file));
     }
 
@@ -175,7 +190,7 @@ public class TKnowledgeController extends BaseController {
     public ResponseEntity<byte[]> export(@RequestParam("filePath") String strZipPath) throws IOException {
 
         String fileName = strZipPath.substring(strZipPath.lastIndexOf("/") + 1);
-        String filePath = "D:/res/"+ strZipPath.substring(0, strZipPath.lastIndexOf("/"));
+        String filePath = "D:/static/" + strZipPath.substring(0, strZipPath.lastIndexOf("/"));
 
         HttpHeaders headers = new HttpHeaders();
         File file = new File(filePath + "/" + fileName);
@@ -188,7 +203,7 @@ public class TKnowledgeController extends BaseController {
 
     @RequestMapping("delfile")
     @ResponseBody
-    public String delFile(@RequestParam("id")String id){
+    public String delFile(@RequestParam("id") String id) {
         return knownledgeFileService.deleteTKnownledgeFileById(id) > 0 ? "0" : "1";
     }
 

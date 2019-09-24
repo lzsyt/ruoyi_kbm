@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.kbm.mapper.TGoodsLinkMapper">
+    
+    <resultMap type="com.ruoyi.project.system.kbm.domain.TGoodsLink" id="TGoodsLinkResult">
+        <result property="numIid"    column="num_iid"    />
+        <result property="title"    column="title"    />
+        <result property="detailUrl"    column="detail_url"    />
+        <result property="goodsId"    column="goods_id"    />
+        <result property="propertyAlias"    column="property_alias"    />
+        <result property="nick"    column="nick"    />
+        <result property="state"    column="state"    />
+        <result property="picPath"    column="pic_path"    />
+        <result property="isSku"    column="is_sku"    />
+        <result property="warehouseId"    column="warehouse_id"    />
+        <result property="isDel"    column="is_del"    />
+        <result property="cid"    column="cid"    />
+        <result property="isUpdate"    column="is_update"    />
+    </resultMap>
+
+    <sql id="selectTGoodsLinkVo">
+        select num_iid, title, detail_url, goods_id, property_alias, nick, state, pic_path, is_sku, warehouse_id, is_del, cid, is_update from t_goods_link
+    </sql>
+
+    <select id="selectTGoodsLinkList" parameterType="com.ruoyi.project.system.kbm.domain.TGoodsLink" resultMap="TGoodsLinkResult">
+        <include refid="selectTGoodsLinkVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="detailUrl != null  and detailUrl != ''"> and detail_url = #{detailUrl}</if>
+            <if test="goodsId != null  and goodsId != ''"> and goods_id = #{goodsId}</if>
+            <if test="propertyAlias != null  and propertyAlias != ''"> and property_alias = #{propertyAlias}</if>
+            <if test="nick != null  and nick != ''"> and nick = #{nick}</if>
+            <if test="state != null "> and state = #{state}</if>
+            <if test="picPath != null  and picPath != ''"> and pic_path = #{picPath}</if>
+            <if test="isSku != null "> and is_sku = #{isSku}</if>
+            <if test="warehouseId != null  and warehouseId != ''"> and warehouse_id = #{warehouseId}</if>
+            <if test="isDel != null "> and is_del = #{isDel}</if>
+            <if test="cid != null "> and cid = #{cid}</if>
+            <if test="isUpdate != null "> and is_update = #{isUpdate}</if>
+        </where>
+    </select>
+    
+    <select id="selectTGoodsLinkById" parameterType="Long" resultMap="TGoodsLinkResult">
+        <include refid="selectTGoodsLinkVo"/>
+        where num_iid = #{numIid}
+    </select>
+        
+    <insert id="insertTGoodsLink" parameterType="com.ruoyi.project.system.kbm.domain.TGoodsLink">
+        insert into t_goods_link
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="numIid != null ">num_iid,</if>
+            <if test="title != null  and title != ''">title,</if>
+            <if test="detailUrl != null  and detailUrl != ''">detail_url,</if>
+            <if test="goodsId != null  and goodsId != ''">goods_id,</if>
+            <if test="propertyAlias != null  and propertyAlias != ''">property_alias,</if>
+            <if test="nick != null  and nick != ''">nick,</if>
+            <if test="state != null ">state,</if>
+            <if test="picPath != null  and picPath != ''">pic_path,</if>
+            <if test="isSku != null ">is_sku,</if>
+            <if test="warehouseId != null  and warehouseId != ''">warehouse_id,</if>
+            <if test="isDel != null ">is_del,</if>
+            <if test="cid != null ">cid,</if>
+            <if test="isUpdate != null ">is_update,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="numIid != null ">#{numIid},</if>
+            <if test="title != null  and title != ''">#{title},</if>
+            <if test="detailUrl != null  and detailUrl != ''">#{detailUrl},</if>
+            <if test="goodsId != null  and goodsId != ''">#{goodsId},</if>
+            <if test="propertyAlias != null  and propertyAlias != ''">#{propertyAlias},</if>
+            <if test="nick != null  and nick != ''">#{nick},</if>
+            <if test="state != null ">#{state},</if>
+            <if test="picPath != null  and picPath != ''">#{picPath},</if>
+            <if test="isSku != null ">#{isSku},</if>
+            <if test="warehouseId != null  and warehouseId != ''">#{warehouseId},</if>
+            <if test="isDel != null ">#{isDel},</if>
+            <if test="cid != null ">#{cid},</if>
+            <if test="isUpdate != null ">#{isUpdate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTGoodsLink" parameterType="com.ruoyi.project.system.kbm.domain.TGoodsLink">
+        update t_goods_link
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null  and title != ''">title = #{title},</if>
+            <if test="detailUrl != null  and detailUrl != ''">detail_url = #{detailUrl},</if>
+            <if test="goodsId != null  and goodsId != ''">goods_id = #{goodsId},</if>
+            <if test="propertyAlias != null  and propertyAlias != ''">property_alias = #{propertyAlias},</if>
+            <if test="nick != null  and nick != ''">nick = #{nick},</if>
+            <if test="state != null ">state = #{state},</if>
+            <if test="picPath != null  and picPath != ''">pic_path = #{picPath},</if>
+            <if test="isSku != null ">is_sku = #{isSku},</if>
+            <if test="warehouseId != null  and warehouseId != ''">warehouse_id = #{warehouseId},</if>
+            <if test="isDel != null ">is_del = #{isDel},</if>
+            <if test="cid != null ">cid = #{cid},</if>
+            <if test="isUpdate != null ">is_update = #{isUpdate},</if>
+        </trim>
+        where num_iid = #{numIid}
+    </update>
+
+    <delete id="deleteTGoodsLinkById" parameterType="Long">
+        delete from t_goods_link where num_iid = #{numIid}
+    </delete>
+
+    <delete id="deleteTGoodsLinkByIds" parameterType="String">
+        delete from t_goods_link where num_iid in 
+        <foreach item="numIid" collection="array" open="(" separator="," close=")">
+            #{numIid}
+        </foreach>
+    </delete>
+    
+</mapper>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.kbm.mapper.TSellerCatMapper">
+    
+    <resultMap type="com.ruoyi.project.system.kbm.domain.TSellerCat" id="TSellerCatResult">
+        <result property="cid"    column="cid"    />
+        <result property="created"    column="created"    />
+        <result property="modified"    column="modified"    />
+        <result property="name"    column="name"    />
+        <result property="parentCid"    column="parent_cid"    />
+        <result property="picUrl"    column="pic_url"    />
+        <result property="sortOrder"    column="sort_order"    />
+        <result property="shopId"    column="shop_id"    />
+        <result property="isDel"    column="is_del"    />
+    </resultMap>
+
+    <sql id="selectTSellerCatVo">
+        select cid, created, modified, name, parent_cid, pic_url, sort_order, shop_id, is_del from t_good_cat
+    </sql>
+
+    <select id="selectTSellerCatList" parameterType="com.ruoyi.project.system.kbm.domain.TSellerCat" resultMap="TSellerCatResult">
+        <include refid="selectTSellerCatVo"/>
+        <where>  
+            <if test="cid != null "> and cid = #{cid}</if>
+            <if test="created != null "> and created = #{created}</if>
+            <if test="modified != null "> and modified = #{modified}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="parentCid != null "> and parent_cid = #{parentCid}</if>
+            <if test="picUrl != null  and picUrl != ''"> and pic_url = #{picUrl}</if>
+            <if test="sortOrder != null "> and sort_order = #{sortOrder}</if>
+            <if test="shopId != null "> and shop_id = #{shopId}</if>
+            <if test="isDel != null "> and is_del = #{isDel}</if>
+        </where>
+    </select>
+    
+    <select id="selectTSellerCatById" parameterType="Long" resultMap="TSellerCatResult">
+        <include refid="selectTSellerCatVo"/>
+        where cid = #{cid}
+    </select>
+        
+    <insert id="insertTSellerCat" parameterType="com.ruoyi.project.system.kbm.domain.TSellerCat">
+        insert into t_good_cat
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cid != null ">cid,</if>
+            <if test="created != null ">created,</if>
+            <if test="modified != null ">modified,</if>
+            <if test="name != null  and name != ''">name,</if>
+            <if test="parentCid != null ">parent_cid,</if>
+            <if test="picUrl != null  and picUrl != ''">pic_url,</if>
+            <if test="sortOrder != null ">sort_order,</if>
+            <if test="shopId != null ">shop_id,</if>
+            <if test="isDel != null ">is_del,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cid != null ">#{cid},</if>
+            <if test="created != null ">#{created},</if>
+            <if test="modified != null ">#{modified},</if>
+            <if test="name != null  and name != ''">#{name},</if>
+            <if test="parentCid != null ">#{parentCid},</if>
+            <if test="picUrl != null  and picUrl != ''">#{picUrl},</if>
+            <if test="sortOrder != null ">#{sortOrder},</if>
+            <if test="shopId != null ">#{shopId},</if>
+            <if test="isDel != null ">#{isDel},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTSellerCat" parameterType="com.ruoyi.project.system.kbm.domain.TSellerCat">
+        update t_good_cat
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="created != null ">created = #{created},</if>
+            <if test="modified != null ">modified = #{modified},</if>
+            <if test="name != null  and name != ''">name = #{name},</if>
+            <if test="parentCid != null ">parent_cid = #{parentCid},</if>
+            <if test="picUrl != null  and picUrl != ''">pic_url = #{picUrl},</if>
+            <if test="sortOrder != null ">sort_order = #{sortOrder},</if>
+            <if test="shopId != null ">shop_id = #{shopId},</if>
+            <if test="isDel != null ">is_del = #{isDel},</if>
+        </trim>
+        where cid = #{cid}
+    </update>
+
+    <delete id="deleteTSellerCatById" parameterType="Long">
+        delete from t_good_cat where cid = #{cid}
+    </delete>
+
+    <delete id="deleteTSellerCatByIds" parameterType="String">
+        delete from t_good_cat where cid in 
+        <foreach item="cid" collection="array" open="(" separator="," close=")">
+            #{cid}
+        </foreach>
+    </delete>
+    
+</mapper>

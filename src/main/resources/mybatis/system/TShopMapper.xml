@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.kbm.mapper.TShopMapper">
+    
+    <resultMap type="com.ruoyi.project.system.kbm.domain.TShop" id="TShopResult">
+        <result property="id"    column="id"    />
+        <result property="shopName"    column="shop_name"    />
+        <result property="shopToken"    column="shop_token"    />
+        <result property="shopTel"    column="shop_tel"    />
+        <result property="shopAdds"    column="shop_adds"    />
+    </resultMap>
+
+    <sql id="selectTShopVo">
+        select id, shop_name, shop_token, shop_tel, shop_adds from t_shop
+    </sql>
+
+    <select id="selectTShopList" parameterType="com.ruoyi.project.system.kbm.domain.TShop" resultMap="TShopResult">
+        <include refid="selectTShopVo"/>
+        <where>  
+            <if test="shopName != null  and shopName != ''"> and shop_name like concat('%', #{shopName}, '%')</if>
+            <if test="shopToken != null  and shopToken != ''"> and shop_token = #{shopToken}</if>
+            <if test="shopTel != null  and shopTel != ''"> and shop_tel = #{shopTel}</if>
+            <if test="shopAdds != null  and shopAdds != ''"> and shop_adds = #{shopAdds}</if>
+        </where>
+    </select>
+    
+    <select id="selectTShopById" parameterType="Integer" resultMap="TShopResult">
+        <include refid="selectTShopVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTShop" parameterType="com.ruoyi.project.system.kbm.domain.TShop" useGeneratedKeys="true" keyProperty="id">
+        insert into t_shop
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="shopName != null  and shopName != ''">shop_name,</if>
+            <if test="shopToken != null  and shopToken != ''">shop_token,</if>
+            <if test="shopTel != null  and shopTel != ''">shop_tel,</if>
+            <if test="shopAdds != null  and shopAdds != ''">shop_adds,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="shopName != null  and shopName != ''">#{shopName},</if>
+            <if test="shopToken != null  and shopToken != ''">#{shopToken},</if>
+            <if test="shopTel != null  and shopTel != ''">#{shopTel},</if>
+            <if test="shopAdds != null  and shopAdds != ''">#{shopAdds},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTShop" parameterType="com.ruoyi.project.system.kbm.domain.TShop">
+        update t_shop
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="shopName != null  and shopName != ''">shop_name = #{shopName},</if>
+            <if test="shopToken != null  and shopToken != ''">shop_token = #{shopToken},</if>
+            <if test="shopTel != null  and shopTel != ''">shop_tel = #{shopTel},</if>
+            <if test="shopAdds != null  and shopAdds != ''">shop_adds = #{shopAdds},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTShopById" parameterType="Integer">
+        delete from t_shop where id = #{id}
+    </delete>
+
+    <delete id="deleteTShopByIds" parameterType="String">
+        delete from t_shop where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

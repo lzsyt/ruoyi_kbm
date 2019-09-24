@@ -3,15 +3,18 @@ package com.ruoyi.project.system.kbm.service.impl;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.text.Convert;
+import com.ruoyi.project.system.kbm.domain.KnowledgeGoodlinkCatMap;
 import com.ruoyi.project.system.kbm.domain.TKnowledge;
 import com.ruoyi.project.system.kbm.domain.TKnownledgeFile;
-import com.ruoyi.project.system.kbm.mapper.TKnowledgeMapper;
-import com.ruoyi.project.system.kbm.mapper.TKnownledgeFileMapper;
+import com.ruoyi.project.system.kbm.mapper.*;
 import com.ruoyi.project.system.kbm.service.ITKnowledgeService;
+import net.bytebuddy.asm.Advice;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,11 +29,13 @@ import java.util.Map;
  */
 @Service
 public class TKnowledgeServiceImpl implements ITKnowledgeService {
-    @Autowired
+    @Resource
     private TKnowledgeMapper tKnowledgeMapper;
-    @Autowired
+    @Resource
     private TKnownledgeFileMapper tKnownledgeFileMapper;
 
+    @Resource
+    private KnowledgeGoodlinkCatMapMapper knowledgeGoodlinkCatMapMapper;
 
     private static final String[] VDOTYPE = {"mp4", "avi"};
     private static final String[] DOCTYPE = {"doc", "docx", "ppt"};
@@ -150,6 +155,10 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
         TKnownledgeFile tKnownledgeFile = new TKnownledgeFile();
         tKnownledgeFile.setKnowledgeId(id);
         knowledge.setFiles(tKnownledgeFileMapper.selectTKnownledgeFileList(tKnownledgeFile));
+        KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap = knowledgeGoodlinkCatMapMapper.selectKnowledgeGoodlinkCatMapById(knowledge.getId());
+        if (knowledgeGoodlinkCatMap!=null&&knowledgeGoodlinkCatMap.getKnowledgeId()!=null){
+            knowledge.setKnowledgeGoodlinkCatMap(knowledgeGoodlinkCatMap);
+        }
         return knowledge;
     }
 
@@ -167,6 +176,17 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
             tKnownledgeFile.setKnowledgeId(knowledge.getId());
             knowledge.setFiles(tKnownledgeFileMapper.selectTKnownledgeFileList(tKnownledgeFile));
         }
+        for (TKnowledge knowledge:knowledgeList) {
+            if (knowledge.getFiles() != null && knowledge.getFiles().size() != 0) {
+                for (TKnownledgeFile file : knowledge.getFiles()) {
+                    if (file.getFileType() == 1L) {
+                        knowledge.setImagePath(file.getFilePath());
+                        break;
+                    }
+                }
+            }
+
+        }
         return knowledgeList;
     }
 
@@ -182,7 +202,12 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
         tKnowledge.setId(String.valueOf(System.currentTimeMillis()));
         tKnowledge.setBuildTime(new Date());
         setFilePath(tKnowledge.getId(), file);
-        return tKnowledgeMapper.insertTKnowledge(tKnowledge);
+        int result = tKnowledgeMapper.insertTKnowledge(tKnowledge);
+        if (tKnowledge.getKnowledgeGoodlinkCatMap()!=null){
+            tKnowledge.getKnowledgeGoodlinkCatMap().setKnowledgeId(tKnowledge.getId());
+            knowledgeGoodlinkCatMapMapper.insertKnowledgeGoodlinkCatMap(tKnowledge.getKnowledgeGoodlinkCatMap());
+        }
+        return result;
     }
 
     /**
@@ -197,6 +222,15 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
         setFilePath(tKnowledge.getId(), file);
         if (StringUtils.isEmpty(tKnowledge.getSort())){
             tKnowledge.setSort(null);
+        }
+        if (tKnowledge.getKnowledgeGoodlinkCatMap()!=null){
+            tKnowledge.getKnowledgeGoodlinkCatMap().setKnowledgeId(tKnowledge.getId());
+            KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap = knowledgeGoodlinkCatMapMapper.selectKnowledgeGoodlinkCatMapById(tKnowledge.getId());
+            if (knowledgeGoodlinkCatMap!=null){
+                knowledgeGoodlinkCatMapMapper.updateKnowledgeGoodlinkCatMap(tKnowledge.getKnowledgeGoodlinkCatMap());
+            }else{
+                knowledgeGoodlinkCatMapMapper.insertKnowledgeGoodlinkCatMap(tKnowledge.getKnowledgeGoodlinkCatMap());
+            }
         }
         return tKnowledgeMapper.updateTKnowledge(tKnowledge);
     }
@@ -230,6 +264,9 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
      */
     @Override
     public TKnowledge selectTKnowledgeRecent() {
-        return tKnowledgeMapper.selecttknowledgeRecent();
+        TKnowledge tKnowledge = tKnowledgeMapper.selecttknowledgeRecent();
+        KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap = knowledgeGoodlinkCatMapMapper.selectKnowledgeGoodlinkCatMapById(tKnowledge.getId());
+        tKnowledge.setKnowledgeGoodlinkCatMap(knowledgeGoodlinkCatMap);
+        return tKnowledge;
     }
 }
