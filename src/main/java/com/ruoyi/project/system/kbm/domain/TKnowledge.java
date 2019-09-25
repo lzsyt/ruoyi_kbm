@@ -79,6 +79,25 @@ public class TKnowledge extends BaseEntity
 
     private List<TKnownledgeFile> files;
 
+    private String sortName;
+    private String orgName;
+
+    public String getSortName() {
+        return sortName;
+    }
+
+    public void setSortName(String sortName) {
+        this.sortName = sortName;
+    }
+
+    public String getOrgName() {
+        return orgName;
+    }
+
+    public void setOrgName(String orgName) {
+        this.orgName = orgName;
+    }
+
     private KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap;
 
 

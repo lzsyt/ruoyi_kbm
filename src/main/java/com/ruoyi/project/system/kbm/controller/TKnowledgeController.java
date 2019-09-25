@@ -55,7 +55,6 @@ public class TKnowledgeController extends BaseController {
     private ITSellerCatService tSellerCatService;
 
 
-
     @RequiresPermissions("system:knowledge:view")
     @GetMapping()
     public String knowledge(ModelMap modelMap) {
@@ -66,7 +65,7 @@ public class TKnowledgeController extends BaseController {
 
 
     @RequestMapping("/getimg/{id}")
-    public String getimage(@PathVariable("id") String id,ModelMap modelMap){
+    public String getimage(@PathVariable("id") String id, ModelMap modelMap) {
         modelMap.put("tKnowledge", tKnowledgeService.selectTKnowledgeById(id));
         return prefix + "/imag";
     }
@@ -103,12 +102,32 @@ public class TKnowledgeController extends BaseController {
      */
     @GetMapping("/add")
     public String add(ModelMap modelMap) {
-        modelMap.put("sorts", tKnownledgeSortService.selectTKnownledgeSortList(null));
-        modelMap.put("orgs", tOrgService.getChild(tOrgService.selectTOrgList(null)));
+        List<TOrg> tOrgs = tOrgService.getChild(tOrgService.selectTOrgList(null));
+        List<TKnownledgeSort> knownledgeSorts = tKnownledgeSortService.selectTKnownledgeSortList(null);
+        TKnowledge tKnowledge = tKnowledgeService.selectTKnowledgeRecent();
+        if (tKnowledge.getSort() != null) {
+            for (TKnownledgeSort knownledgeSort : knownledgeSorts) {
+                if (String.valueOf(knownledgeSort.getId()).equals(tKnowledge.getSort())) {
+                    tKnowledge.setSortName(knownledgeSort.getSort());
+                    break;
+                }
+            }
+        }
+
+        if (tKnowledge.getDataOrg() != null) {
+            for (TOrg tOrg : tOrgs) {
+                if (tOrg.getDataOrg().equals(tKnowledge.getDataOrg())) {
+                    tKnowledge.setOrgName(tOrg.getName());
+                    break;
+                }
+            }
+        }
+        modelMap.put("tKnowledge", tKnowledge);
+        modelMap.put("sorts", knownledgeSorts);
+        modelMap.put("orgs", tOrgs);
         modelMap.put("tshop", itShopService.selectTShopList(null));
         modelMap.put("goodlink", tGoodsLinkService.selectTGoodsLinkList(new TGoodsLink()));
         modelMap.put("goodcat", tSellerCatService.selectTSellerCatList(new TSellerCat()));
-        modelMap.put("tKnowledge", tKnowledgeService.selectTKnowledgeRecent());
         return prefix + "/add";
     }
 
@@ -159,9 +178,29 @@ public class TKnowledgeController extends BaseController {
      */
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") String id, ModelMap mmap) {
-        mmap.put("tKnowledge", tKnowledgeService.selectTKnowledgeById(id));
-        mmap.put("sorts", tKnownledgeSortService.selectTKnownledgeSortList(null));
-        mmap.put("orgs", tOrgService.getChild(tOrgService.selectTOrgList(null)));
+        List<TOrg> tOrgs = tOrgService.getChild(tOrgService.selectTOrgList(null));
+        List<TKnownledgeSort> knownledgeSorts = tKnownledgeSortService.selectTKnownledgeSortList(null);
+        TKnowledge tKnowledge = tKnowledgeService.selectTKnowledgeById(id);
+        if (tKnowledge.getSort() != null) {
+            for (TKnownledgeSort knownledgeSort : knownledgeSorts) {
+                if (String.valueOf(knownledgeSort.getId()).equals(tKnowledge.getSort())) {
+                    tKnowledge.setSortName(knownledgeSort.getSort());
+                    break;
+                }
+            }
+        }
+
+        if (tKnowledge.getDataOrg() != null) {
+            for (TOrg tOrg : tOrgs) {
+                if (tOrg.getDataOrg().equals(tKnowledge.getDataOrg())) {
+                    tKnowledge.setOrgName(tOrg.getName());
+                    break;
+                }
+            }
+        }
+        mmap.put("tKnowledge", tKnowledge);
+        mmap.put("sorts", knownledgeSorts);
+        mmap.put("orgs", tOrgs);
         mmap.put("tshop", itShopService.selectTShopList(null));
         mmap.put("goodlink", tGoodsLinkService.selectTGoodsLinkList(new TGoodsLink()));
         mmap.put("goodcat", tSellerCatService.selectTSellerCatList(new TSellerCat()));
@@ -175,7 +214,7 @@ public class TKnowledgeController extends BaseController {
     @Log(title = "知识库", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
-    public AjaxResult editSave(TKnowledge tKnowledge,KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap,
+    public AjaxResult editSave(TKnowledge tKnowledge, KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap,
                                MultipartFile[] file) {
         tKnowledge.setKnowledgeGoodlinkCatMap(knowledgeGoodlinkCatMap);
         return toAjax(tKnowledgeService.updateTKnowledge(tKnowledge, file));

@@ -31,8 +31,11 @@
                     <label class="col-sm-4 control-label">归属部门：</label>
                     <div class="col-sm-8">
                         <select class="form-control" name="dataOrg" id="org">
-                            <option th:value="${tKnowledge.dataOrg}">部门</option>
-                            <option th:each="org : ${orgs}" th:value="${org.getName()}"
+                            <option th:if="${tKnowledge.dataOrg==null||tKnowledge.dataOrg==''}" value="">部门</option>
+                            <option th:if="${tKnowledge.dataOrg!=null && tKnowledge.dataOrg!=''}"
+                                    th:value="${tKnowledge.dataOrg}">[[${tKnowledge.orgName}]]
+                            </option>
+                            <option th:each="org : ${orgs}" th:value="${org.dataOrg}"
                                     th:text="${org.getName()}">
                             </option>
                         </select>
@@ -55,7 +58,10 @@
                     <label class="col-sm-4 control-label">问题分类：</label>
                     <div class="col-sm-8">
                         <select class="form-control" name="sort" id="sort">
-                            <option th:value="${tKnowledge.getSort()}">问题分类</option>
+                            <option th:if="${tKnowledge.sort==null || tKnowledge.sort==''}" value="">问题分类</option>
+                            <option th:if="${tKnowledge.sort!=null && tKnowledge.sort!=''}"
+                                    th:value="${tKnowledge.sort}">[[${tKnowledge.sortName}]]
+                            </option>
                             <option th:each="sorts:${sorts}" th:value="${sorts.id}"
                                     th:text="${sorts.sort}">
                             </option>
@@ -153,7 +159,7 @@
                     <label class="col-xs-2 control-label">答案：</label>
                     <div class="col-xs-10">
                         <textarea id="answer" th:text="${tKnowledge.answer}" name="answer" maxlength="500"
-                                  class="form-control" rows="3"></textarea>
+                                  class="form-control" rows="5"></textarea>
                     </div>
                 </div>
             </div>
