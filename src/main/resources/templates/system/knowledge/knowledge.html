@@ -2,7 +2,7 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <th:block th:include="include :: header('知识库列表')"/>
-    <th:block th:include="include :: layout-latest-css" />
+    <th:block th:include="include :: layout-latest-css"/>
 </head>
 <body class="gray-bg">
 <div class="container-div">
@@ -21,7 +21,7 @@
                         </li>
                         <li>
                             <p>部门：</p>
-                            <select name="dataOrg" >
+                            <select name="dataOrg">
                                 <option value="">部门</option>
                                 <option th:each="org : ${orgs}" th:value="${org.getName()}"
                                         th:text="${org.getName()}">
@@ -78,7 +78,7 @@
                 <i class="fa fa-remove"></i> 删除
             </a>
             <!--<a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="system:knowledge:export">-->
-                <!--<i class="fa fa-download"></i> 导出-->
+            <!--<i class="fa fa-download"></i> 导出-->
             <!--</a>-->
         </div>
         <div class="col-sm-12 select-table table-striped">
@@ -86,21 +86,32 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal inmodal" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog"  style="height: 500px;width: 1200px;">
+        <div class="modal-content animated bounceInRight">
+            <div id="modalbody" class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" onclick="hiddenmodel()" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <th:block th:include="include :: footer"/>
 <script th:inline="javascript">
     var editFlag = [[${@permission.hasPermi('system:knowledge:edit')}]];
     var removeFlag = [[${@permission.hasPermi('system:knowledge:remove')}]];
     var prefix = ctx + "system/knowledge";
 
+    function hiddenmodel() {
+        $("#myModal").css('display', 'none');
+    }
+
     function myreset() {
-        // var cks = $("input[name='sort_id']:checked");
-        // console.log(cks);
-        // for (var i = 0; i < cks.length; i++) {
-        //     cks[i].checked = false;;
-        //     console.log(cks[i]);
-        // }
-        //
-        // // $("#sorts_hd").val("");
         $.form.reset()
         document.location.reload();
     }
@@ -115,6 +126,18 @@
     }
 
     $(function () {
+
+        // $('#bootstrap-table').on('click-row.bs.table', function (e, row, element) {
+        //     if (row.imagePath==''||row.imagePath==null){
+        //         return;
+        //     }
+        //     $.get(prefix+"/getimg/"+row.id, function (result) {
+        //         $("#modalbody").html(result);
+        //         $("#myModal").show();
+        //     });
+        // });
+
+
         $(document).keydown(function (event) {
             if (event.keyCode == 13) {
                 submitHandler();
@@ -151,14 +174,12 @@
                 }, {
                     title: '图片',
                     formatter: function (value, row, index) {
-                        // 图片预览（注意：如存储在本地直接获取数据库路径，如有配置context-path需要使用ctx+路径）
-                        // 如：/profile/upload/2019/08/08/3b7a839aced67397bac694d77611ce72.png
-                        // $.table.imageView('http://demo.ruoyi.vip/ruoyi.png')
-                        // return $.table.imageView(row.imagePath);
-                        if(row.imagePath == ''||row.imagePath == null){
-                            return '<span>暂无图片</span>';
-                        }else {
-                            return $.table.imageView(''+row.imagePath+'');
+                        if (row.imagePath == '' || row.imagePath == null) {
+                            return '<span>-</span>';
+                        } else {
+                            var actions = [];
+                            actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="showimg(\'' + row.id + '\')"><i class="fa fa-edit"></i>显示图片</a>');
+                            return actions.join('');
                         }
 
                     }
@@ -189,6 +210,14 @@
         $.table.init(options);
     });
 
+    function showimg(id) {
+        console.info("加载模态框数据")
+        $.get(prefix+"/getimg/"+id, function (result) {
+            $("#modalbody").html(result);
+            console.info("加载模态框")
+            $("#myModal").show();
+        });
+    }
 
 </script>
 </body>

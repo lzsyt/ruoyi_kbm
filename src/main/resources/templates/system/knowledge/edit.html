@@ -94,7 +94,7 @@
                                     th:value="${tKnowledge.knowledgeGoodlinkCatMap.shopId}">
                                 [[${tKnowledge.knowledgeGoodlinkCatMap.shopName}]]
                             </option>
-                            <option th:if="${tKnowledge.knowledgeGoodlinkCatMap==null}">店铺名称</option>
+                            <option th:if="${tKnowledge.knowledgeGoodlinkCatMap==null}" value="">店铺名称</option>
                             <option th:each="shop:${tshop}" th:value="${shop.id}"
                                     th:text="${shop.shopName}">
                             </option>

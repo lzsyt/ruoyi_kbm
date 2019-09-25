@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+    <form class="form-horizontal m" id="form-knowledge-edit" th:object="${tKnowledge}">
+        <input name="id" th:field="*{id}" type="hidden">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <div class="col-md-12" id="imglist">
+                        <div class="col-md-12">
+                            <div th:each="files : ${tKnowledge.files}" th:if="${files.fileType==1}" class="text-center">
+                                <div class="col-md-3">
+                                    <img class="image img-rounded"
+                                         th:height="200" th:width="200"
+                                         th:src="@{${files.filePath}}">
+                                    <label th:text="${files.fileName}"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

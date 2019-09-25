@@ -10,6 +10,7 @@ import com.ruoyi.project.system.kbm.domain.*;
 import com.ruoyi.project.system.kbm.service.*;
 import com.ruoyi.project.system.kbm.service.impl.TShopServiceImpl;
 import org.apache.commons.io.FileUtils;
+import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -57,6 +58,7 @@ public class TKnowledgeController extends BaseController {
     private ITSellerCatService tSellerCatService;
 
 
+
     @RequiresPermissions("system:knowledge:view")
     @GetMapping()
     public String knowledge(ModelMap modelMap) {
@@ -64,6 +66,14 @@ public class TKnowledgeController extends BaseController {
         modelMap.put("orgs", tOrgService.getChild(tOrgService.selectTOrgList(null)));
         return prefix + "/knowledge";
     }
+
+
+    @RequestMapping("/getimg/{id}")
+    public String getimage(@PathVariable("id") String id,ModelMap modelMap){
+        modelMap.put("tKnowledge", tKnowledgeService.selectTKnowledgeById(id));
+        return prefix + "/imag";
+    }
+
 
     /**
      * 查询知识库列表
@@ -190,7 +200,7 @@ public class TKnowledgeController extends BaseController {
     public ResponseEntity<byte[]> export(@RequestParam("filePath") String strZipPath) throws IOException {
 
         String fileName = strZipPath.substring(strZipPath.lastIndexOf("/") + 1);
-        String filePath = "D:/static/" + strZipPath.substring(0, strZipPath.lastIndexOf("/"));
+        String filePath = "/res/static/" + strZipPath.substring(0, strZipPath.lastIndexOf("/"));
 
         HttpHeaders headers = new HttpHeaders();
         File file = new File(filePath + "/" + fileName);
