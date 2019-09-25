@@ -148,7 +148,7 @@ public class FileUploadUtils
     {
         int dirLastIndex = uploadDir.lastIndexOf("/") + 1;
         String currentDir = StringUtils.substring(uploadDir, dirLastIndex);
-        String pathFileName = Constants.RESOURCE_PREFIX + "/" + currentDir + "/" + fileName;
+        String pathFileName = "/" + currentDir + "/" + fileName;
         return pathFileName;
     }
 

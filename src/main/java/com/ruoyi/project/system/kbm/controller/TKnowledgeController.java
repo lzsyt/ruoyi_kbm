@@ -1,6 +1,6 @@
 package com.ruoyi.project.system.kbm.controller;
 
-import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.Log;
 import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
 import com.ruoyi.framework.web.controller.BaseController;
@@ -8,9 +8,7 @@ import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.project.system.kbm.domain.*;
 import com.ruoyi.project.system.kbm.service.*;
-import com.ruoyi.project.system.kbm.service.impl.TShopServiceImpl;
 import org.apache.commons.io.FileUtils;
-import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +20,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -200,8 +197,7 @@ public class TKnowledgeController extends BaseController {
     public ResponseEntity<byte[]> export(@RequestParam("filePath") String strZipPath) throws IOException {
 
         String fileName = strZipPath.substring(strZipPath.lastIndexOf("/") + 1);
-        String filePath = "/res/static/" + strZipPath.substring(0, strZipPath.lastIndexOf("/"));
-
+        String filePath = FileUploadUtils.getDefaultBaseDir() + strZipPath.substring(0, strZipPath.lastIndexOf("/"));
         HttpHeaders headers = new HttpHeaders();
         File file = new File(filePath + "/" + fileName);
 

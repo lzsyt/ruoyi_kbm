@@ -104,7 +104,7 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
 
     private void setDocPath(MultipartFile file,String id) throws IOException {
         String fileName = file.getOriginalFilename();
-        String filePath = FileUploadUtils.upload(file);
+        String filePath = FileUploadUtils.upload(FileUploadUtils.getDefaultBaseDir()+"/vdo",file);
         TKnownledgeFile tKnownledgeFile = new TKnownledgeFile();
         tKnownledgeFile.setFileName(fileName);
         tKnownledgeFile.setFilePath(filePath);
@@ -115,7 +115,7 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
 
     private void setVdoPath(MultipartFile file,String id) throws IOException {
         String fileName = file.getOriginalFilename();
-        String filePath = FileUploadUtils.upload(file);
+        String filePath = FileUploadUtils.upload(FileUploadUtils.getDefaultBaseDir()+"/doc",file);
         TKnownledgeFile tKnownledgeFile = new TKnownledgeFile();
         tKnownledgeFile.setFileName(fileName);
         tKnownledgeFile.setFilePath(filePath);
@@ -126,7 +126,7 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
 
     private void setImgPath(MultipartFile file,String id) throws IOException {
         String fileName = file.getOriginalFilename();
-        String filePath = FileUploadUtils.upload(file);
+        String filePath = FileUploadUtils.upload(FileUploadUtils.getDefaultBaseDir()+"/images",file);
         TKnownledgeFile tKnownledgeFile = new TKnownledgeFile();
         tKnownledgeFile.setFileName(fileName);
         tKnownledgeFile.setFilePath(filePath);

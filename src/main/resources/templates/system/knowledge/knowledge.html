@@ -89,7 +89,7 @@
 
 
 <div class="modal inmodal" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog"  style="height: 500px;width: 1200px;">
+    <div class="modal-dialog"  style="width: 1200px;">
         <div class="modal-content animated bounceInRight">
             <div id="modalbody" class="modal-body">
             </div>
@@ -102,6 +102,7 @@
 
 
 <th:block th:include="include :: footer"/>
+<script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
 <script th:inline="javascript">
     var editFlag = [[${@permission.hasPermi('system:knowledge:edit')}]];
     var removeFlag = [[${@permission.hasPermi('system:knowledge:remove')}]];
@@ -126,17 +127,6 @@
     }
 
     $(function () {
-
-        // $('#bootstrap-table').on('click-row.bs.table', function (e, row, element) {
-        //     if (row.imagePath==''||row.imagePath==null){
-        //         return;
-        //     }
-        //     $.get(prefix+"/getimg/"+row.id, function (result) {
-        //         $("#modalbody").html(result);
-        //         $("#myModal").show();
-        //     });
-        // });
-
 
         $(document).keydown(function (event) {
             if (event.keyCode == 13) {
