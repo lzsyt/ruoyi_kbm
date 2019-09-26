@@ -4,11 +4,13 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.text.Convert;
 import com.ruoyi.project.system.kbm.domain.KnowledgeGoodlinkCatMap;
+import com.ruoyi.project.system.kbm.domain.TKeyword;
 import com.ruoyi.project.system.kbm.domain.TKnowledge;
 import com.ruoyi.project.system.kbm.domain.TKnownledgeFile;
 import com.ruoyi.project.system.kbm.mapper.*;
 import com.ruoyi.project.system.kbm.service.ITKnowledgeService;
 import net.bytebuddy.asm.Advice;
+import net.sf.jsqlparser.statement.select.First;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,9 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
     private TKnowledgeMapper tKnowledgeMapper;
     @Resource
     private TKnownledgeFileMapper tKnownledgeFileMapper;
+    @Resource
+    private TKeywordMapper tKeywordMapper;
+
 
     @Resource
     private KnowledgeGoodlinkCatMapMapper knowledgeGoodlinkCatMapMapper;
@@ -40,7 +45,6 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
     private static final String[] VDOTYPE = {"mp4", "avi"};
     private static final String[] DOCTYPE = {"doc", "docx", "ppt"};
     private static final String[] IMATYPE = {"jpg", "png", "gif"};
-    private static final String FILEBASEPATH = "/res/kbm/";
 
     //判断是否为图片
     private boolean isImg(String suffix) {
@@ -143,6 +147,7 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
         }
     }
 
+
     /**
      * 查询知识库
      *
@@ -171,6 +176,9 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
     @Override
     public List<TKnowledge> selectTKnowledgeList(TKnowledge tKnowledge) {
         List<TKnowledge> knowledgeList = tKnowledgeMapper.selectTKnowledgeList(tKnowledge);
+
+
+
         for (TKnowledge knowledge : knowledgeList) {
             TKnownledgeFile tKnownledgeFile = new TKnownledgeFile();
             tKnownledgeFile.setKnowledgeId(knowledge.getId());

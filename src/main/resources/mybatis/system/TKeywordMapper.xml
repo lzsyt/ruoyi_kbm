@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.kbm.mapper.TKeywordMapper">
+    
+    <resultMap type="TKeyword" id="TKeywordResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+    </resultMap>
+
+    <sql id="selectTKeywordVo">
+        select id, name from t_keyword
+    </sql>
+
+    <select id="selectTKeywordList" parameterType="TKeyword" resultMap="TKeywordResult">
+        <include refid="selectTKeywordVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectTKeywordById" parameterType="Long" resultMap="TKeywordResult">
+        <include refid="selectTKeywordVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTKeyword" parameterType="TKeyword" useGeneratedKeys="true" keyProperty="id">
+        insert into t_keyword
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null  and name != ''">name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null  and name != ''">#{name},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTKeyword" parameterType="TKeyword">
+        update t_keyword
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null  and name != ''">name = #{name},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTKeywordById" parameterType="Long">
+        delete from t_keyword where id = #{id}
+    </delete>
+
+    <delete id="deleteTKeywordByIds" parameterType="String">
+        delete from t_keyword where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>

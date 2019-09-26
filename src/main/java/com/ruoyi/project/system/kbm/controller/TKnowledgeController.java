@@ -59,15 +59,28 @@ public class TKnowledgeController extends BaseController {
     @GetMapping()
     public String knowledge(ModelMap modelMap) {
         modelMap.put("sorts", tKnownledgeSortService.selectTKnownledgeSortList(null));
-        modelMap.put("orgs", tOrgService.getChild(tOrgService.selectTOrgList(null)));
+        modelMap.put("orgs", tOrgService.selectTOrgList(null));
         return prefix + "/knowledge";
     }
 
 
     @RequestMapping("/getimg/{id}")
-    public String getimage(@PathVariable("id") String id, ModelMap modelMap) {
-        modelMap.put("tKnowledge", tKnowledgeService.selectTKnowledgeById(id));
-        return prefix + "/imag";
+    @ResponseBody
+    public String getimage(@PathVariable("id") String id,ModelMap modelMap){
+        TKnowledge knowledge=tKnowledgeService.selectTKnowledgeById(id);
+        List<TKnownledgeFile> files=knowledge.getFiles();
+        String img="";
+        for(TKnownledgeFile file:files){
+
+            if(file.getFileType()==1){
+                img+=file.getFilePath()+",";
+
+            }
+
+        }
+
+        return  img;
+
     }
 
 

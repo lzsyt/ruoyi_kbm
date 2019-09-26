@@ -159,22 +159,12 @@
                     <label class="col-xs-2 control-label">答案：</label>
                     <div class="col-xs-10">
                         <textarea id="answer" th:text="${tKnowledge.answer}" name="answer" maxlength="500"
-                                  class="form-control" rows="5"></textarea>
+                                  class="form-control" rows="10"></textarea>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="form-group" id="file_img">
-                    <label class="font-noraml">文件上传</label>
-                    <div class="file-loading">
-                        <input name="file" id="file" type="file" multiple>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
+
         <!--图片展示-->
         <h4 th:if="${tKnowledge.files!=null}" class="form-header h4">文件列表</h4>
         <div class="row" th:if="${tKnowledge.files!=null}">
@@ -230,6 +220,20 @@
                 </div>
             </div>
         </div>
+
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-header h4" id="file_img">
+                    <h4 class="font-noraml">文件上传</h4>
+                    <div class="file-loading">
+                        <input name="file" id="file" type="file" multiple>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
 </div>
 
 <div class="row">
