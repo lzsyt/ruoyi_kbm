@@ -11,8 +11,9 @@
     #file_img .fileinput-upload-button {
         display: none;
     }
+
     /*.huanghang {*/
-        /*white-space: pre-wrap;*/
+    /*white-space: pre-wrap;*/
     /*}*/
 </style>
 <body>
@@ -182,18 +183,18 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-sm-offset-5 col-sm-10">
-                <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i
-                        class="fa fa-check"></i>保 存
-                </button>&nbsp;
-                <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i
-                        class="fa fa-reply-all"></i>关 闭
-                </button>
-            </div>
-        </div>
-    </form>
 
+    </form>
+    <div class="row">
+        <div class="col-sm-offset-5 col-sm-10">
+            <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i
+                    class="fa fa-check"></i>保 存
+            </button>&nbsp;
+            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i
+                    class="fa fa-reply-all"></i>关 闭
+            </button>
+        </div>
+    </div>
 </div>
 
 
@@ -208,7 +209,7 @@
 
 
     $(document).ready(function () {
-        $('.summernote').summernote('code', '<div class="huanghang">'+ans+"</div");
+        $('.summernote').summernote('code', '<div class="huanghang">' + ans + "</div");
         $("#file").fileinput({
             'theme': 'explorer-fas',
             'uploadUrl': '/common/upload',
@@ -237,7 +238,7 @@
             var productFactory = $("#productFactory").val();
             var ask = $("#ask").val();
             // var answer = $("#answer").val();
-            var answer=$('.summernote').summernote('code');
+            var answer = $('.summernote').summernote('code');
             console.info(answer);
             var goodslinkId = $("#goodslinkId").val();
             var catId = $("#catId").val();
