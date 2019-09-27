@@ -1,5 +1,6 @@
 package com.ruoyi.project.system.kbm.controller;
 
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.Log;
 import com.ruoyi.framework.aspectj.lang.enums.BusinessType;
@@ -172,13 +173,13 @@ public class TKnowledgeController extends BaseController {
         tKnowledge.setAnswer(answer);
         tKnowledge.setDataOrg(dataOrg);
         KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap = new KnowledgeGoodlinkCatMap();
-        if (shopid != null) {
+        if (StringUtils.isNotEmpty(shopid)) {
             knowledgeGoodlinkCatMap.setShopId(Integer.valueOf(shopid));
         }
-        if (goodslinkId != null) {
+        if (StringUtils.isNotEmpty(goodslinkId)) {
             knowledgeGoodlinkCatMap.setGoodslinkId(Long.valueOf(goodslinkId));
         }
-        if (catId != null) {
+        if (StringUtils.isNotEmpty(catId)) {
             knowledgeGoodlinkCatMap.setCatId(Long.valueOf(catId));
         }
         tKnowledge.setKnowledgeGoodlinkCatMap(knowledgeGoodlinkCatMap);

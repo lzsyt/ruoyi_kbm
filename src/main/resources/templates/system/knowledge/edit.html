@@ -174,7 +174,7 @@
                         <div class="col-md-2" th:each="files : ${tKnowledge.files}">
                             <div th:if="${files.fileType==1}" class="text-center">
                                 <div class="col-md-12">
-                                    <img class="image img-rounded"
+                                    <img class="image img-rounded" th:onclick="showImage([[${files.filePath}]])"
                                          th:height="200" th:width="200"
                                          th:src="@{${files.filePath}}">
                                 </div>
@@ -205,10 +205,11 @@
                                 </div>
                             </div>
                             <div th:if="${files.fileType==2}" class="text-center">
-                                <video controls="controls" th:src="@{${files.filePath}}"></video>
+                                <video controls="controls" th:src="@{${files.filePath}}" ></video>
                                 <div class="col-md-12"><label th:text="${files.fileName}"></label></div>
                                 <div class="col-md-12">
                                     <form method="post" th:action="@{/system/knowledge/download}">
+                                        <button class="btn btn-white" type="button" th:onclick="showVideo([[${files.filePath}]])">弹框播放</button>
                                         <input name="filePath" th:value="${files.filePath}" type="hidden">
                                         <a class="btn btn-white" th:onclick="delfile([[${files.fileId}]])">删除</a>
                                         <input class="btn btn-white" type="submit" value="下载">
@@ -244,12 +245,59 @@
         </button>
     </div>
 </div>
+
+
+
+
+<div class="modal inmodal " id="imgModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-body text-center">
+                <img id="image"  style="width: 800px"  src="">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal inmodal "  id="videoModel" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-body text-center">
+                <video id="video" controls="controls" th:width="800" src=""></video>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <th:block th:include="include :: footer"/>
 <th:block th:include="include :: select2-js"/>
 <th:block th:include="include :: bootstrap-fileinput-js"/>
 <script type="text/javascript">
     var prefix = ctx + "system/knowledge";
 
+
+    function showVideo(path) {
+        $("#video").attr('src',path);
+        console.info(path)
+        $("#videoModel").modal('show');
+        console.info("show success")
+    }
+
+
+    function showImage(path) {
+        $("#image").attr('src',path);
+        console.info(path)
+        $("#imgModal").modal('show');
+        console.info("show success")
+    }
 
     function delfile(data) {
         $.post(prefix + "/delfile", {"id": data}, function (data) {
