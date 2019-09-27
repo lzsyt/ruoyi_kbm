@@ -43,8 +43,8 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
     private KnowledgeGoodlinkCatMapMapper knowledgeGoodlinkCatMapMapper;
 
     private static final String[] VDOTYPE = {"mp4", "avi"};
-    private static final String[] DOCTYPE = {"doc", "docx", "ppt"};
-    private static final String[] IMATYPE = {"jpg", "png", "gif"};
+    private static final String[] DOCTYPE = {"doc", "docx", "ppt", "xl", "xls", "txt", "xlsx", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "html", "htm", "txt", "pdf"};
+    private static final String[] IMATYPE = {"jpg", "png", "gif", "bmp", "gif", "jpg", "jpeg", "png",};
 
     //判断是否为图片
     private boolean isImg(String suffix) {
@@ -108,7 +108,7 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
 
     private void setDocPath(MultipartFile file,String id) throws IOException {
         String fileName = file.getOriginalFilename();
-        String filePath = FileUploadUtils.upload(FileUploadUtils.getDefaultBaseDir()+"/vdo",file);
+        String filePath = FileUploadUtils.upload(FileUploadUtils.getDefaultBaseDir()+"/doc",file);
         TKnownledgeFile tKnownledgeFile = new TKnownledgeFile();
         tKnownledgeFile.setFileName(fileName);
         tKnownledgeFile.setFilePath(filePath);
@@ -119,7 +119,7 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
 
     private void setVdoPath(MultipartFile file,String id) throws IOException {
         String fileName = file.getOriginalFilename();
-        String filePath = FileUploadUtils.upload(FileUploadUtils.getDefaultBaseDir()+"/doc",file);
+        String filePath = FileUploadUtils.upload(FileUploadUtils.getDefaultBaseDir()+"/vdo",file);
         TKnownledgeFile tKnownledgeFile = new TKnownledgeFile();
         tKnownledgeFile.setFileName(fileName);
         tKnownledgeFile.setFilePath(filePath);

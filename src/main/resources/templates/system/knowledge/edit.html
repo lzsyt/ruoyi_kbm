@@ -3,17 +3,21 @@
 <head>
     <th:block th:include="include :: header('修改知识库')"/>
     <th:block th:include="include :: select2-css"/>
-    <!--<th:block th:include="include :: header('文件上传')" />-->
     <th:block th:include="include :: bootstrap-fileinput-css"/>
+    <th:block th:include="include :: summernote-css"/>
 </head>
 <style>
     #file_img .fileinput-upload-button {
         display: none;
     }
+
+    .huanghang {
+        white-space: pre-wrap;
+    }
 </style>
 <body>
 <div class="main-content">
-    <form id="form-knowledge-add" action="/system/knowledge/edit" method="post" class="form-horizontal"
+    <form id="form-knowledge-edit" action="/system/knowledge/edit" method="post" class="form-horizontal"
           enctype="multipart/form-data">
         <input id="id" name="id" type="hidden" th:value="${tKnowledge.id}">
         <div class="row">
@@ -31,7 +35,8 @@
                     <label class="col-sm-4 control-label">归属部门：</label>
                     <div class="col-sm-8">
                         <select class="form-control" name="dataOrg" id="org">
-                            <option th:if="${tKnowledge.dataOrg==null||tKnowledge.dataOrg==''}" value="">部门</option>
+                            <option th:if="${tKnowledge.dataOrg==null||tKnowledge.dataOrg==''}" value="" required>部门
+                            </option>
                             <option th:if="${tKnowledge.dataOrg!=null && tKnowledge.dataOrg!=''}"
                                     th:value="${tKnowledge.dataOrg}">[[${tKnowledge.orgName}]]
                             </option>
@@ -73,9 +78,10 @@
         <div class="row">
             <div class="col-sm-6">
                 <div class="form-group">
-                    <label class="col-sm-4 control-label">问题：</label>
+                    <label class="col-sm-4 control-label">问题描述：</label>
                     <div class="col-sm-8">
-                        <input id="ask" th:value="${tKnowledge.ask}" name="ask" class="form-control" type="text">
+                        <input id="ask" th:value="${tKnowledge.ask}" name="ask" class="form-control" type="text"
+                               minlength="1" required>
                     </div>
                 </div>
             </div>
@@ -89,13 +95,12 @@
                 </div>
             </div>
         </div>
-        <!---->
         <div class="row">
             <div class="col-sm-6">
                 <div class="form-group">
                     <label class="col-sm-4 control-label">店铺名称</label>
                     <div class="col-sm-8">
-                        <select class="form-control" id="shopId"  name="shopId">
+                        <select class="form-control" id="shopId" name="shopId">
                             <option th:if="${tKnowledge.knowledgeGoodlinkCatMap!=null}"
                                     th:value="${tKnowledge.knowledgeGoodlinkCatMap.shopId}">
                                 [[${tKnowledge.knowledgeGoodlinkCatMap.shopName}]]
@@ -126,8 +131,6 @@
                 </div>
             </div>
         </div>
-
-
         <div class="row">
             <div class="col-sm-6">
                 <div class="form-group">
@@ -152,19 +155,20 @@
                 </div>
             </div>
         </div>
-
         <div class="row">
             <div class="col-sm-12">
-                <div class="form-group">
-                    <label class="col-xs-2 control-label">答案：</label>
-                    <div class="col-xs-10">
-                        <textarea id="answer" th:text="${tKnowledge.answer}" name="answer" maxlength="500"
-                                  class="form-control" rows="10"></textarea>
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>答案</h5>
+                    </div>
+                    <div class="ibox-content no-padding">
+                        <input id="ans" th:value="${tKnowledge.answer}" type="hidden">
+                        <div class="summernote">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
         <!--图片展示-->
         <h4 th:if="${tKnowledge.files!=null}" class="form-header h4">文件列表</h4>
         <div class="row" th:if="${tKnowledge.files!=null}">
@@ -182,11 +186,13 @@
                                     <label th:text="${files.fileName}"></label>
                                 </div>
                                 <div class="col-md-12">
-                                    <form method="post" th:action="@{/system/knowledge/download}">
-                                        <input name="filePath" th:value="${files.filePath}" type="hidden">
-                                        <a class="btn btn-white" th:onclick="delfile([[${files.fileId}]])">删除</a>
-                                        <input class="btn btn-white" type="submit" value="下载">
-                                    </form>
+                                    <!--<form method="post" th:action="@{/system/knowledge/download}">-->
+                                    <input name="filePath" th:value="${files.filePath}" type="hidden">
+                                    <a class="btn btn-white" th:onclick="delfile([[${files.fileId}]])">删除</a>
+                                    <a class="btn btn-white"
+                                       th:href="@{'/system/knowledge/download?filePath='+${files.filePath}}"
+                                       th:text="下载"></a>
+                                    <!--</form>-->
                                 </div>
                             </div>
                             <div th:if="${files.fileType==3}" class="text-center">
@@ -197,23 +203,29 @@
                                 </div>
                                 <div class="col-md-12"><label th:text="${files.fileName}"></label></div>
                                 <div class="col-md-12">
-                                    <form method="post" th:action="@{/system/knowledge/download}">
-                                        <input name="filePath" th:value="${files.filePath}" type="hidden">
-                                        <a class="btn btn-white" th:onclick="delfile([[${files.fileId}]])">删除</a>
-                                        <input class="btn btn-white" type="submit" value="下载">
-                                    </form>
+                                    <!--<form method="post" th:action="@{/system/knowledge/download}">-->
+                                    <input name="filePath" th:value="${files.filePath}" type="hidden">
+                                    <a class="btn btn-white" th:onclick="delfile([[${files.fileId}]])">删除</a>
+                                    <a class="btn btn-white"
+                                       th:href="@{'/system/knowledge/download?filePath='+${files.filePath}}"
+                                       th:text="下载"></a>
+                                    <!--</form>-->
                                 </div>
                             </div>
                             <div th:if="${files.fileType==2}" class="text-center">
-                                <video controls="controls" th:src="@{${files.filePath}}" ></video>
+                                <video controls="controls" th:src="@{${files.filePath}}"></video>
                                 <div class="col-md-12"><label th:text="${files.fileName}"></label></div>
                                 <div class="col-md-12">
-                                    <form method="post" th:action="@{/system/knowledge/download}">
-                                        <button class="btn btn-white" type="button" th:onclick="showVideo([[${files.filePath}]])">弹框播放</button>
-                                        <input name="filePath" th:value="${files.filePath}" type="hidden">
-                                        <a class="btn btn-white" th:onclick="delfile([[${files.fileId}]])">删除</a>
-                                        <input class="btn btn-white" type="submit" value="下载">
-                                    </form>
+                                    <!--<form method="post" th:action="@{/system/knowledge/download}">-->
+                                    <button class="btn btn-white" type="button"
+                                            th:onclick="showVideo([[${files.filePath}]])">弹框播放
+                                    </button>
+                                    <input name="filePath" th:value="${files.filePath}" type="hidden">
+                                    <a class="btn btn-white" th:onclick="delfile([[${files.fileId}]])">删除</a>
+                                    <a class="btn btn-white"
+                                       th:href="@{'/system/knowledge/download?filePath='+${files.filePath}}"
+                                       th:text="下载"></a>
+                                    <!--</form>-->
                                 </div>
                             </div>
                         </div>
@@ -225,35 +237,36 @@
 
         <div class="row">
             <div class="col-sm-12">
-                <div class="form-header h4" id="file_img">
-                    <h4 class="font-noraml">文件上传</h4>
+                <div class="form-group" id="file_img">
+                    <label class="font-noraml">文件上传</label>
                     <div class="file-loading">
                         <input name="file" id="file" type="file" multiple>
                     </div>
                 </div>
             </div>
         </div>
+
+
     </form>
-
-</div>
-
-<div class="row">
-    <div class="col-sm-offset-5 col-sm-10">
-        <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>保 存
-        </button>&nbsp;
-        <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭
-        </button>
+    <div class="row">
+        <div class="col-sm-offset-5 col-sm-10">
+            <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i
+                    class="fa fa-check"></i>保 存
+            </button>&nbsp;
+            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i
+                    class="fa fa-reply-all"></i>关 闭
+            </button>
+        </div>
     </div>
+
 </div>
-
-
 
 
 <div class="modal inmodal " id="imgModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content animated bounceInRight">
             <div class="modal-body text-center">
-                <img id="image"  style="width: 800px"  src="">
+                <img id="image" style="width: 800px" src="">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
@@ -263,7 +276,7 @@
 </div>
 
 
-<div class="modal inmodal "  id="videoModel" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal inmodal " id="videoModel" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content animated bounceInRight">
             <div class="modal-body text-center">
@@ -280,12 +293,16 @@
 <th:block th:include="include :: footer"/>
 <th:block th:include="include :: select2-js"/>
 <th:block th:include="include :: bootstrap-fileinput-js"/>
+<th:block th:include="include :: summernote-js"/>
 <script type="text/javascript">
     var prefix = ctx + "system/knowledge";
 
 
+    $("#form-knowledge-add").validate();
+
+
     function showVideo(path) {
-        $("#video").attr('src',path);
+        $("#video").attr('src', path);
         console.info(path)
         $("#videoModel").modal('show');
         console.info("show success")
@@ -293,7 +310,7 @@
 
 
     function showImage(path) {
-        $("#image").attr('src',path);
+        $("#image").attr('src', path);
         console.info(path)
         $("#imgModal").modal('show');
         console.info("show success")
@@ -314,64 +331,76 @@
 
 
     $(document).ready(function () {
+        var ans = $("#ans").val();
+        console.info(ans);
+
+        $('.summernote').summernote({
+            lang: 'zh-CN',
+            height: 300
+        });
+        $('.summernote').summernote('code', '<div class="huanghang">' + ans + "</div");
         $("#file").fileinput({
             'theme': 'explorer-fas',
             'uploadUrl': '/common/upload',
             overwriteInitial: false,
             initialPreviewAsData: false
         });
-
     });
 
+
     function submitHandler() {
-        var url = prefix + "/edit";
-        var id = $("#id").val();
-        var org = $("#org").val();
-        var productName = $("#productName").val();
-        var shopNum = $("#shopNum").val();
-        var sort = $("#sort").val();
-        var productFactory = $("#productFactory").val();
-        var ask = $("#ask").val();
-        var answer = $("#answer").val();
-        var goodslinkId = $("#goodslinkId").val();
-        var catId = $("#catId").val();
-        var shopId = $("#shopId").val();
-        var files = document.getElementById("file").files;
+        if ($.validate.form()) {
+            var url = prefix + "/edit";
+            var id = $("#id").val();
+            var org = $("#org").val();
+            var productName = $("#productName").val();
+            var shopNum = $("#shopNum").val();
+            var sort = $("#sort").val();
+            var productFactory = $("#productFactory").val();
+            var ask = $("#ask").val();
+            // var answer = $("#answer").val();
+            var answer = $('.summernote').summernote('code');
+            console.info(answer);
+            var goodslinkId = $("#goodslinkId").val();
+            var catId = $("#catId").val();
+            var shopId = $("#shopId").val();
+            var files = document.getElementById("file").files;
 
-        var formFile = new FormData();
-        formFile.append("id", id);
-        formFile.append("dataOrg", org);
-        formFile.append("productName", productName);
-        formFile.append("shopNum", shopNum);
-        formFile.append("sort", sort);
-        formFile.append("productFactory", productFactory);
-        formFile.append("ask", ask);
-        formFile.append("goodslinkId", goodslinkId);
-        formFile.append("catId", catId);
-        formFile.append("shopId", shopId);
-        formFile.append("answer", answer);
-        for (var i = 0; i < files.length; i++) {
-            formFile.append('file', files[i])
-        }
-
-        $.ajax({
-            type: "POST",
-            dataType: "json",//服务器返回的数据类型
-            url: url,
-            data: formFile,
-            cache: false,
-            processData: false,
-            contentType: false,
-            success: function (result) {
-                if (typeof callback == "function") {
-                    callback(result);
-                }
-                $.operate.successTabCallback(result);
-            },
-            error: function () {
-                alert("异常！");
+            var formFile = new FormData();
+            formFile.append("id", id);
+            formFile.append("dataOrg", org);
+            formFile.append("productName", productName);
+            formFile.append("shopNum", shopNum);
+            formFile.append("sort", sort);
+            formFile.append("productFactory", productFactory);
+            formFile.append("ask", ask);
+            formFile.append("goodslinkId", goodslinkId);
+            formFile.append("catId", catId);
+            formFile.append("shopId", shopId);
+            formFile.append("answer", answer);
+            for (var i = 0; i < files.length; i++) {
+                formFile.append('file', files[i])
             }
-        });
+
+            $.ajax({
+                type: "POST",
+                dataType: "json",//服务器返回的数据类型
+                url: url,
+                data: formFile,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    if (typeof callback == "function") {
+                        callback(result);
+                    }
+                    $.operate.successTabCallback(result);
+                },
+                error: function () {
+                    alert("异常！");
+                }
+            });
+        }
     }
 </script>
 </body>

@@ -34,7 +34,7 @@
                             </select>
                         </li>
                         <li>
-                            <p>店铺编号：</p>
+                            <p>商家编号：</p>
                             <input type="text" name="shopNum"/>
                         </li>
                         <li>
@@ -51,12 +51,10 @@
                         </li>
                         <li id="sorts">
                             <label th:each="sorts:${sorts}" class="check-box">
-                                <input name="sort_id" type="checkbox" th:value="${sorts.id}"
-                                       th:text="${sorts.sort}">
+                                <input name="sort_id" type="checkbox" th:value="${sorts.id}">
+                                <span th:text="${sorts.sort}"></span>
                             </label>
                             <input type="hidden" name="sorts" id="sorts_hd"/>
-
-
                         </li>
                         <li>
                             <a class="btn btn-primary btn-rounded btn-sm" onclick="submitHandler()"><i
@@ -113,6 +111,7 @@
     var removeFlag = [[${@permission.hasPermi('system:knowledge:remove')}]];
     var prefix = ctx + "system/knowledge";
 
+
     function hiddenmodel() {
         $("#myModal").css('display', 'none');
     }
@@ -156,6 +155,10 @@
     }
 
     $(function () {
+        $(".iCheck-helper").click(function(){
+            // console.info("点击")
+            submitHandler();
+        });
 
         $(document).keydown(function (event) {
             if (event.keyCode == 13) {
@@ -172,7 +175,7 @@
             detailView: true,
 
             detailFormatter: detailFormatter,
-           // onClickRow: onClickRow,
+            // onClickRow: onClickRow,
             modalName: "知识库",
             uniqueId: "id",//每一行的唯一标识，一般为主键列
             columns: [{
@@ -181,6 +184,27 @@
                 {
                     field: 'ask',
                     title: '问题',
+                    formatter: function (value, row, index) {
+                        return '<span>' + highlighted(value) + '</span>';
+                    }
+                },
+                {
+                    field: 'shopNum',
+                    title: '商家编号',
+                    formatter: function (value, row, index) {
+                        return '<span>' + highlighted(value) + '</span>';
+                    }
+                },
+                {
+                    field: 'productName',
+                    title: '产品名称',
+                    formatter: function (value, row, index) {
+                        return '<span>' + highlighted(value) + '</span>';
+                    }
+                },
+                {
+                    field: 'productFactory',
+                    title: '生产厂家',
                     formatter: function (value, row, index) {
                         return '<span>' + highlighted(value) + '</span>';
                     }
@@ -194,19 +218,19 @@
                     },
 
                 }
-                ]
+            ]
         };
         $.table.init(options);
     });
 
-    function onClickRow(row, $element){
+    function onClickRow(row, $element) {
 
-        var src="";
+        var src = "";
 
-        $.get(prefix+"/getimg/"+row.id, function (result) {
-            console.log("re:"+result);
-            if(result!=null&&result!=''){
-                var arr=result.split(",");
+        $.get(prefix + "/getimg/" + row.id, function (result) {
+            console.log("re:" + result);
+            if (result != null && result != '') {
+                var arr = result.split(",");
 
 
                 layer.open({
@@ -229,35 +253,14 @@
         var html = [];
 
 
-
-        $.each(row, function(key, value) {
-            if (key=="sort"){
-
-                html.push(" <p>所属分类："+highlighted(value)+"</p>");
-
+        $.each(row, function (key, value) {
+            if (key == "sort") {
+                html.push(" <p>所属分类：" + highlighted(value) + "</p>");
             }
-            if (key=="productFactory"){
-
-                html.push(" <p>生产厂家："+highlighted(value)+"</p>");
-
-            }
-            if (key=="productName"){
-
-                html.push(" <p>产品名："+highlighted(value)+"</>");
-
-            }
-            if (key=="shopNum"){
-
-                html.push(" <p>商家编号："+highlighted(value)+"</p>");
-
-            }
-
-                if (key=="files"){
-               for(var i=0;i<value.length;i++){
-
-                   html.push(" <img src='" + value[i].filePath+ "' class='file_img' height='200px'/>");
-
-               }
+            if (key == "files") {
+                for (var i = 0; i < value.length; i++) {
+                    html.push(" <img src='" + value[i].filePath + "' class='file_img' height='200px'/>");
+                }
 
 
             }
@@ -265,9 +268,10 @@
 
         return html.join('');
     }
+
     function showimg(path) {
         //$.table.imageView('http://demo.ruoyi.vip/img/profile.jpg');
-       console.info("加载模态框数据");
+        console.info("加载模态框数据");
 
         layer.open({
             title: false,
@@ -279,16 +283,16 @@
         });
         $(function () {
             $(".file_img").click(function () {
-               console.log("路径："+$(this).attr(src));
+                console.log("路径：" + $(this).attr(src));
             })
         })
 
 
-       /* $.get(prefix+"/getimg/"+id, function (result) {
-            $("#modalbody").html(result);
-            console.info("加载模态框")
-            $("#myModal").show();
-        });*/
+        /* $.get(prefix+"/getimg/"+id, function (result) {
+             $("#modalbody").html(result);
+             console.info("加载模态框")
+             $("#myModal").show();
+         });*/
     }
 
 
