@@ -266,7 +266,7 @@
             if (key == "files") {
                 for (var i = 0; i < value.length; i++) {``
                     if (value[i].fileType=='1'){
-                        html.push(" <div class=\"col-md-3 text-center\"> <img class=\"image img-rounded\" src='" + value[i].filePath + "'  height='300px' width='300px'/></div>");
+                        html.push(" <div class=\"col-md-3 text-center\"> <img class=\"image img-rounded\"  onclick='showimg(\""+ value[i].filePath+"\")' src='" + value[i].filePath + "'  height='300px' width='300px'/></div>");
                     }else if (value[i].fileType=='2') {
                         html.push(" <div class=\"col-md-3 text-center\"><video controls=\"controls\" src='" + value[i].filePath + "'  height='300px' width='300px'/></div>");
                     }
@@ -289,7 +289,7 @@
             closeBtn: true,
             shadeClose: true,
             area: ['auto', 'auto'],
-            content: "<img src='" + path + "'  height='" + 200 + "' width='" + 200 + "'/>"
+            content: "<img src='" + path + " width='" + 200 + "'/>"
         });
         $(function () {
             $(".file_img").click(function () {
