@@ -88,6 +88,44 @@ public class TKnowledge extends BaseEntity
         return factoryName;
     }
 
+    private String shopName;
+
+    private String shop_id;
+
+    public String getShop_id() {
+        return shop_id;
+    }
+
+    public void setShop_id(String shop_id) {
+        this.shop_id = shop_id;
+    }
+
+    private String goodlinkName;
+
+    public String getGoodlinkName() {
+        return goodlinkName;
+    }
+
+    public void setGoodlinkName(String goodlinkName) {
+        this.goodlinkName = goodlinkName;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public List<KnowledgeGoodlinkCatMap> getKnowledgeGoodlinkCatMapList() {
+        return knowledgeGoodlinkCatMapList;
+    }
+
+    public void setKnowledgeGoodlinkCatMapList(List<KnowledgeGoodlinkCatMap> knowledgeGoodlinkCatMapList) {
+        this.knowledgeGoodlinkCatMapList = knowledgeGoodlinkCatMapList;
+    }
+
     public void setFactoryName(String factoryName) {
         this.factoryName = factoryName;
     }
@@ -108,15 +146,15 @@ public class TKnowledge extends BaseEntity
         this.orgName = orgName;
     }
 
-    private KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap;
+    private List<KnowledgeGoodlinkCatMap> knowledgeGoodlinkCatMapList;
 
 
-    public KnowledgeGoodlinkCatMap getKnowledgeGoodlinkCatMap() {
-        return knowledgeGoodlinkCatMap;
+    public List<KnowledgeGoodlinkCatMap> getKnowledgeGoodlinkCatMap() {
+        return knowledgeGoodlinkCatMapList;
     }
 
-    public void setKnowledgeGoodlinkCatMap(KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap) {
-        this.knowledgeGoodlinkCatMap = knowledgeGoodlinkCatMap;
+    public void setKnowledgeGoodlinkCatMap(List<KnowledgeGoodlinkCatMap> knowledgeGoodlinkCatMapList) {
+        this.knowledgeGoodlinkCatMapList = knowledgeGoodlinkCatMapList;
     }
 
     public List<TKnownledgeFile> getFiles() {

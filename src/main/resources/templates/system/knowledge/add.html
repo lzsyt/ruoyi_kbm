@@ -5,6 +5,7 @@
     <th:block th:include="include :: select2-css"/>
     <th:block th:include="include :: bootstrap-fileinput-css"/>
     <th:block th:include="include :: summernote-css"/>
+    <th:block th:include="include :: bootstrap-select-css"/>
 </head>
 <style>
     #file_img .fileinput-upload-button {
@@ -20,7 +21,7 @@
     <form id="form-knowledge-add" th:action="@{/system/knowledge/add}" method="post" class="form-horizontal"
           enctype="multipart/form-data">
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <div class="form-group">
                     <label class="col-sm-4 control-label">商品名称：</label>
                     <div class="col-sm-8">
@@ -29,26 +30,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label class="col-sm-4 control-label">归属部门：</label>
-                    <div class="col-sm-8">
-                        <select class="form-control" name="dataOrg" id="org">
-                            <option th:if="${tKnowledge.dataOrg==null||tKnowledge.dataOrg==''}" value="" required>部门
-                            </option>
-                            <option th:if="${tKnowledge.dataOrg!=null && tKnowledge.dataOrg!=''}"
-                                    th:value="${tKnowledge.dataOrg}">[[${tKnowledge.orgName}]]
-                            </option>
-                            <option th:each="org : ${orgs}" th:value="${org.dataOrg}"
-                                    th:text="${org.getName()}">
-                            </option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <div class="form-group">
                     <label class="col-sm-4 control-label">商家编号：</label>
                     <div class="col-sm-8">
@@ -57,7 +39,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <div class="form-group">
                     <label class="col-sm-4 control-label">问题分类：</label>
                     <div class="col-sm-8">
@@ -75,7 +57,10 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
                 <div class="form-group">
                     <label class="col-sm-4 control-label">问题描述：</label>
                     <div class="col-sm-8">
@@ -84,14 +69,16 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <div class="form-group">
                     <label class="col-sm-4 control-label">生产厂家：</label>
                     <div class="col-sm-8">
                         <!--<input id="productFactory" th:value="${tKnowledge.productFactory}" name="productFactory"-->
-                               <!--class="form-control" type="text">-->
+                        <!--class="form-control" type="text">-->
                         <select class="form-control" name="productFactory" id="productFactory">
-                            <option th:if="${tKnowledge.productFactory==null||tKnowledge.productFactory==''}" value="" required>选择生产厂家</option>
+                            <option th:if="${tKnowledge.productFactory==null||tKnowledge.productFactory==''}" value=""
+                                    required>选择生产厂家
+                            </option>
 
                             <option th:if="${tKnowledge.productFactory!=null && tKnowledge.productFactory!=''}"
                                     th:value="${tKnowledge.productFactory}">[[${tKnowledge.factoryName}]]
@@ -104,54 +91,13 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label class="col-sm-4 control-label">店铺名称</label>
-                    <div class="col-sm-8">
-                        <select class="form-control" id="shopId" name="shopId">
-                            <option th:if="${tKnowledge.knowledgeGoodlinkCatMap!=null}"
-                                    th:value="${tKnowledge.knowledgeGoodlinkCatMap.shopId}">
-                                [[${tKnowledge.knowledgeGoodlinkCatMap.shopName}]]
-                            </option>
-                            <option th:if="${tKnowledge.knowledgeGoodlinkCatMap==null}" value="">店铺名称</option>
-                            <option th:each="shop:${tshop}" th:value="${shop.id}"
-                                    th:text="${shop.shopName}">
-                            </option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label class="col-sm-4 control-label">商品种类：</label>
-                    <div class="col-sm-8">
-                        <select class="form-control" id="catId" name="catId">
-                            <option th:if="${tKnowledge.knowledgeGoodlinkCatMap!=null}"
-                                    th:value="${tKnowledge.knowledgeGoodlinkCatMap.catId}">
-                                [[${tKnowledge.knowledgeGoodlinkCatMap.catName}]]
-                            </option>
-                            <option th:if="!${tKnowledge.knowledgeGoodlinkCatMap!=null}" value="">请选择产品种类</option>
-                            <option th:each="goodcat : ${goodcat}" th:value="${goodcat.cid}"
-                                    th:text="${goodcat.name}">
-                            </option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <div class="form-group">
                     <label class="col-sm-4 control-label">选择产品</label>
                     <div class="col-sm-8">
-                        <select class="form-control" id="goodslinkId" name="goodslinkId">
-                            <option th:if="${tKnowledge.knowledgeGoodlinkCatMap!=null}"
-                                    th:value="${tKnowledge.knowledgeGoodlinkCatMap.goodslinkId}">
-                                [[${tKnowledge.knowledgeGoodlinkCatMap.goodlinkName}]]
-                            </option>
-                            <option th:if="!${tKnowledge.knowledgeGoodlinkCatMap!=null}" value="">请选择产品</option>
+                        <input type="hidden" id="goodlinkName" th:value="${tKnowledge.goodlinkName}">
+                        <select class="form-control  selectpicker" data-none-selected-text="请选择产品" multiple
+                                id="goodslinkId" name="goodslinkId">
                             <option th:each="goodlink : ${goodlink}" th:value="${goodlink.numIid}"
                                     th:text="${goodlink.title}">
                             </option>
@@ -159,10 +105,29 @@
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6">
+        </div>
+        <div class="row">
+            <div class="col-sm-4">
                 <div class="form-group">
-                    <!--这个div没什么用，用来占位置的-->
+                    <label class="col-sm-4 control-label">店铺名称</label>
+                    <div class="col-sm-8">
+                        <select class="form-control" id="shopId" name="shopId">
+                            <!--todo  记得改，还有add界面 -->
+                            <option th:if="${tKnowledge.shopName!=null}"
+                                    th:value="${tKnowledge.shop_id}">
+                                [[${tKnowledge.shopName}]]
+                            </option>
+                            <option th:if="${tKnowledge.shopName==null}" value="">店铺名称</option>
+                            <option th:each="shop:${tshop}" th:value="${shop.id}"
+                                    th:text="${shop.shopName}">
+                            </option>
+                        </select>
+                    </div>
                 </div>
+            </div>
+            <div class="col-sm-4">
+            </div>
+            <div class="col-sm-4">
             </div>
         </div>
         <div class="row">
@@ -209,13 +174,21 @@
 <th:block th:include="include :: select2-js"/>
 <th:block th:include="include :: bootstrap-fileinput-js"/>
 <th:block th:include="include :: summernote-js"/>
+<th:block th:include="include :: bootstrap-select-js"/>
 <script type="text/javascript">
     var prefix = ctx + "system/knowledge";
 
     $("#form-knowledge-add").validate();
 
 
-     $(document).ready(function () {
+    $(document).ready(function () {
+
+        var goodlinkname = $("#goodlinkName").val();
+        var goodlink = new Array();
+        goodlink = goodlinkname.split(",");
+        $('#goodslinkId').val(goodlink).trigger("change"); // 多个赋值
+        console.info(goodlink);
+
         var ans = $("#ans").val();
         console.info(ans);
 
@@ -235,10 +208,13 @@
 
 
 
+
     function submitHandler() {
+
+
         if ($.validate.form()) {
             var url = prefix + "/add";
-            var org = $("#org").val();
+            // var org = $("#org").val();
             var productName = $("#productName").val();
             var shopNum = $("#shopNum").val();
             var sort = $("#sort").val();
@@ -248,19 +224,17 @@
             var answer = $('.summernote').summernote('code');
             console.info(answer);
             var goodslinkId = $("#goodslinkId").val();
-            var catId = $("#catId").val();
             var shopId = $("#shopId").val();
             var files = document.getElementById("file").files;
 
             var formFile = new FormData();
-            formFile.append("dataOrg", org);
+            // formFile.append("dataOrg", org);
             formFile.append("productName", productName);
             formFile.append("shopNum", shopNum);
             formFile.append("sort", sort);
             formFile.append("productFactory", productFactory);
             formFile.append("ask", ask);
             formFile.append("goodslinkId", goodslinkId);
-            formFile.append("catId", catId);
             formFile.append("shopId", shopId);
             formFile.append("answer", answer);
             for (var i = 0; i < files.length; i++) {

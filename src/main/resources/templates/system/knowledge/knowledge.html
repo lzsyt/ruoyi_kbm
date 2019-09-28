@@ -43,7 +43,12 @@
                         </li>
                         <li>
                             <p>生产厂家：</p>
-                            <input type="text" name="productFactory"/>
+                            <select name="productFactory">
+                                <option value="">生产厂家</option>
+                                <option th:each="factory : ${factorys}" th:value="${factory.getName()}"
+                                        th:text="${factory.getName()}">
+                                </option>
+                            </select>
                         </li>
                         <li>
                             <p>关键字：</p>
@@ -182,8 +187,8 @@
                 checkbox: true
             },
                 {
-                    field: 'ask',
-                    title: '问题',
+                    field: 'productName',
+                    title: '产品名称',
                     formatter: function (value, row, index) {
                         return '<span>' + highlighted(value) + '</span>';
                     }
@@ -196,15 +201,16 @@
                     }
                 },
                 {
-                    field: 'productName',
-                    title: '产品名称',
+
+                    field: 'factoryName',
+                    title: '生产厂家',
                     formatter: function (value, row, index) {
                         return '<span>' + highlighted(value) + '</span>';
                     }
                 },
                 {
-                    field: 'factoryName',
-                    title: '生产厂家',
+                    field: 'ask',
+                    title: '问题',
                     formatter: function (value, row, index) {
                         return '<span>' + highlighted(value) + '</span>';
                     }
@@ -258,8 +264,12 @@
                 html.push(" <p>所属分类：" + highlighted(value) + "</p>");
             }
             if (key == "files") {
-                for (var i = 0; i < value.length; i++) {
-                    html.push(" <img src='" + value[i].filePath + "' class='file_img' height='200px'/>");
+                for (var i = 0; i < value.length; i++) {``
+                    if (value[i].fileType=='1'){
+                        html.push(" <div class=\"col-md-3 text-center\"> <img class=\"image img-rounded\" src='" + value[i].filePath + "'  height='300px' width='300px'/></div>");
+                    }else if (value[i].fileType=='2') {
+                        html.push(" <div class=\"col-md-3 text-center\"><video controls=\"controls\" src='" + value[i].filePath + "'  height='300px' width='300px'/></div>");
+                    }
                 }
 
 

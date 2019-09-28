@@ -43,7 +43,7 @@
 						  
                         <div class="form-group">
                             <label class="font-noraml">多选</label>
-                            <select class="form-control select2-multiple" multiple>
+                            <select id="id" class="form-control selectpicker" multiple>
                             	<option value="">请选择开发语言</option>
                             	<option value="Java">Java</option>
                             	<option value="PHP">PHP</option>
@@ -144,5 +144,10 @@
     <th:block th:include="include :: footer" />
     <th:block th:include="include :: select2-js" />
     <th:block th:include="include :: bootstrap-select-js" />
+    <script type="application/javascript">
+        $(document).ready(function () {
+            $('#id').val(['Admin', 'RuoYi']).trigger("change");
+        });
+    </script>
 </body>
 </html>

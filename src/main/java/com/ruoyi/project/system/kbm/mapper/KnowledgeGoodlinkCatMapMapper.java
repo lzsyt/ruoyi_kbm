@@ -17,7 +17,7 @@ public interface KnowledgeGoodlinkCatMapMapper
      * @param knowledgeId mapID
      * @return map
      */
-    public KnowledgeGoodlinkCatMap selectKnowledgeGoodlinkCatMapById(String knowledgeId);
+    public List<KnowledgeGoodlinkCatMap> selectKnowledgeGoodlinkCatMapById(String knowledgeId);
 
     /**
      * 查询map列表

@@ -34,9 +34,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         FROM
         	knowledge_goodlink_cat_map
         	INNER JOIN t_goods_link ON knowledge_goodlink_cat_map.goodslink_id = t_goods_link.num_iid
-        	INNER JOIN t_good_cat on t_good_cat.cid = knowledge_goodlink_cat_map.cat_id
+        	left JOIN t_good_cat on t_good_cat.cid = knowledge_goodlink_cat_map.cat_id
         	INNER JOIN t_shop on t_shop.id=knowledge_goodlink_cat_map.shop_id
-        where knowledge_goodlink_cat_map.knowledge_id = #{knowledgeId} limit 1
+        where knowledge_goodlink_cat_map.knowledge_id = #{knowledgeId}
     </select>
         
     <insert id="insertKnowledgeGoodlinkCatMap" parameterType="com.ruoyi.project.system.kbm.domain.KnowledgeGoodlinkCatMap">

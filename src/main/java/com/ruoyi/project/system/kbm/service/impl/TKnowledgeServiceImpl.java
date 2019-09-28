@@ -12,16 +12,14 @@ import com.ruoyi.project.system.kbm.service.ITKnowledgeService;
 import net.bytebuddy.asm.Advice;
 import net.sf.jsqlparser.statement.select.First;
 import org.apache.poi.ss.formula.functions.T;
+import org.omg.PortableServer.LIFESPAN_POLICY_ID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 知识库Service业务层处理
@@ -39,7 +37,7 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
     private TProductFactoryMapper tProductFactoryMapper;
 
 
-    private String getFactoryName(String factoryId){
+    private String getFactoryName(String factoryId) {
         if (StringUtils.isNotEmpty(factoryId)) {
             return tProductFactoryMapper.selectTProductFactoryById(Long.valueOf(factoryId)).getName();
         }
@@ -51,8 +49,8 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
     private KnowledgeGoodlinkCatMapMapper knowledgeGoodlinkCatMapMapper;
 
     private static final String[] VDOTYPE = {"mp4", "avi"};
-    private static final String[] DOCTYPE = {"doc", "docx", "ppt", "xl", "xls", "txt", "xlsx", "doc", "docx", "xls", "xlsx", "ppt", "pptx", "html", "htm", "txt", "pdf"};
-    private static final String[] IMATYPE = {"jpg", "png", "gif", "bmp", "gif", "jpg", "jpeg", "png",};
+    private static final String[] DOCTYPE = {"doc", "docx", "ppt", "txt", "xlsx", "docx", "xls", "ppt", "pptx", "pdf"};
+    private static final String[] IMATYPE = {"jpg", "png", "bmp", "gif", "jpeg"};
 
     //判断是否为图片
     private boolean isImg(String suffix) {
@@ -102,11 +100,11 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
             String suffix = file[i].getOriginalFilename().substring(file[i].getOriginalFilename().lastIndexOf(".") + 1);
 
             if (isImg(suffix)) {                 //判断是否为图片
-                setImgPath(file[i],id);
+                setImgPath(file[i], id);
             } else if (isDoc(suffix)) {           //判断是否为文档
-                setDocPath(file[i],id);
+                setDocPath(file[i], id);
             } else if (isVdo(suffix)) {           //判断是否为视频
-                setVdoPath(file[i],id);
+                setVdoPath(file[i], id);
             } else {
                 System.out.println("文件格式不符合要求");
             }
@@ -114,9 +112,9 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
         return filePathMap;
     }
 
-    private void setDocPath(MultipartFile file,String id) throws IOException {
+    private void setDocPath(MultipartFile file, String id) throws IOException {
         String fileName = file.getOriginalFilename();
-        String filePath = FileUploadUtils.upload(FileUploadUtils.getDefaultBaseDir()+"/doc",file);
+        String filePath = FileUploadUtils.upload(FileUploadUtils.getDefaultBaseDir() + "/doc", file);
         TKnownledgeFile tKnownledgeFile = new TKnownledgeFile();
         tKnownledgeFile.setFileName(fileName);
         tKnownledgeFile.setFilePath(filePath);
@@ -125,9 +123,9 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
         tKnownledgeFileMapper.insertTKnownledgeFile(tKnownledgeFile);
     }
 
-    private void setVdoPath(MultipartFile file,String id) throws IOException {
+    private void setVdoPath(MultipartFile file, String id) throws IOException {
         String fileName = file.getOriginalFilename();
-        String filePath = FileUploadUtils.upload(FileUploadUtils.getDefaultBaseDir()+"/vdo",file);
+        String filePath = FileUploadUtils.upload(FileUploadUtils.getDefaultBaseDir() + "/vdo", file);
         TKnownledgeFile tKnownledgeFile = new TKnownledgeFile();
         tKnownledgeFile.setFileName(fileName);
         tKnownledgeFile.setFilePath(filePath);
@@ -136,9 +134,9 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
         tKnownledgeFileMapper.insertTKnownledgeFile(tKnownledgeFile);
     }
 
-    private void setImgPath(MultipartFile file,String id) throws IOException {
+    private void setImgPath(MultipartFile file, String id) throws IOException {
         String fileName = file.getOriginalFilename();
-        String filePath = FileUploadUtils.upload(FileUploadUtils.getDefaultBaseDir()+"/images",file);
+        String filePath = FileUploadUtils.upload(FileUploadUtils.getDefaultBaseDir() + "/images", file);
         TKnownledgeFile tKnownledgeFile = new TKnownledgeFile();
         tKnownledgeFile.setFileName(fileName);
         tKnownledgeFile.setFilePath(filePath);
@@ -169,9 +167,16 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
         TKnownledgeFile tKnownledgeFile = new TKnownledgeFile();
         tKnownledgeFile.setKnowledgeId(id);
         knowledge.setFiles(tKnownledgeFileMapper.selectTKnownledgeFileList(tKnownledgeFile));
-        KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap = knowledgeGoodlinkCatMapMapper.selectKnowledgeGoodlinkCatMapById(knowledge.getId());
-        if (knowledgeGoodlinkCatMap!=null&&knowledgeGoodlinkCatMap.getKnowledgeId()!=null){
-            knowledge.setKnowledgeGoodlinkCatMap(knowledgeGoodlinkCatMap);
+        List<KnowledgeGoodlinkCatMap> knowledgeGoodlinkCatMapList = knowledgeGoodlinkCatMapMapper.selectKnowledgeGoodlinkCatMapById(knowledge.getId());
+        if (knowledgeGoodlinkCatMapList != null && knowledgeGoodlinkCatMapList.size() != 0) {
+            knowledge.setKnowledgeGoodlinkCatMap(knowledgeGoodlinkCatMapList);
+            knowledge.setShopName(knowledgeGoodlinkCatMapList.get(0).getShopName());
+            knowledge.setShop_id(String.valueOf(knowledgeGoodlinkCatMapList.get(0).getShopId()));
+            StringBuffer factorys = new StringBuffer();
+            for (KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap : knowledgeGoodlinkCatMapList) {
+                factorys.append(knowledgeGoodlinkCatMap.getGoodslinkId()).append(",");
+            }
+            knowledge.setGoodlinkName(factorys.toString());
         }
         return knowledge;
     }
@@ -192,7 +197,7 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
             tKnownledgeFile.setKnowledgeId(knowledge.getId());
             knowledge.setFiles(tKnownledgeFileMapper.selectTKnownledgeFileList(tKnownledgeFile));
         }
-        for (TKnowledge knowledge:knowledgeList) {
+        for (TKnowledge knowledge : knowledgeList) {
             if (knowledge.getFiles() != null && knowledge.getFiles().size() != 0) {
                 for (TKnownledgeFile file : knowledge.getFiles()) {
                     if (file.getFileType() == 1L) {
@@ -219,9 +224,11 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
         tKnowledge.setBuildTime(new Date());
         setFilePath(tKnowledge.getId(), file);
         int result = tKnowledgeMapper.insertTKnowledge(tKnowledge);
-        if (tKnowledge.getKnowledgeGoodlinkCatMap()!=null){
-            tKnowledge.getKnowledgeGoodlinkCatMap().setKnowledgeId(tKnowledge.getId());
-            knowledgeGoodlinkCatMapMapper.insertKnowledgeGoodlinkCatMap(tKnowledge.getKnowledgeGoodlinkCatMap());
+        if (tKnowledge.getKnowledgeGoodlinkCatMap() != null && tKnowledge.getKnowledgeGoodlinkCatMap().size() != 0) {
+            for (KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap : tKnowledge.getKnowledgeGoodlinkCatMap()) {
+                knowledgeGoodlinkCatMap.setKnowledgeId(tKnowledge.getId());
+                knowledgeGoodlinkCatMapMapper.insertKnowledgeGoodlinkCatMap(knowledgeGoodlinkCatMap);
+            }
         }
         return result;
     }
@@ -236,16 +243,36 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
     @Override
     public int updateTKnowledge(TKnowledge tKnowledge, MultipartFile[] file) {
         setFilePath(tKnowledge.getId(), file);
-        if (StringUtils.isEmpty(tKnowledge.getSort())){
+        if (StringUtils.isEmpty(tKnowledge.getSort())) {
             tKnowledge.setSort(null);
         }
-        if (tKnowledge.getKnowledgeGoodlinkCatMap()!=null){
-            tKnowledge.getKnowledgeGoodlinkCatMap().setKnowledgeId(tKnowledge.getId());
-            KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap = knowledgeGoodlinkCatMapMapper.selectKnowledgeGoodlinkCatMapById(tKnowledge.getId());
-            if (knowledgeGoodlinkCatMap!=null){
-                knowledgeGoodlinkCatMapMapper.updateKnowledgeGoodlinkCatMap(tKnowledge.getKnowledgeGoodlinkCatMap());
-            }else{
-                knowledgeGoodlinkCatMapMapper.insertKnowledgeGoodlinkCatMap(tKnowledge.getKnowledgeGoodlinkCatMap());
+        if (tKnowledge.getKnowledgeGoodlinkCatMap() != null && tKnowledge.getKnowledgeGoodlinkCatMap().size() != 0) {
+            List<String> list = new ArrayList<>();
+            for (KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap : tKnowledge.getKnowledgeGoodlinkCatMap()) {
+                list.add(knowledgeGoodlinkCatMap.getKnowledgeId());
+            }
+
+
+            for (KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap : tKnowledge.getKnowledgeGoodlinkCatMap()) {
+                knowledgeGoodlinkCatMap.setKnowledgeId(tKnowledge.getId());
+                List<KnowledgeGoodlinkCatMap> knowledgeGoodlinkCatMapList = knowledgeGoodlinkCatMapMapper.selectKnowledgeGoodlinkCatMapById(tKnowledge.getId());
+                boolean flag = false;
+                for (KnowledgeGoodlinkCatMap goodlinkCatMap : knowledgeGoodlinkCatMapList) {
+                    if (String.valueOf(goodlinkCatMap.getGoodslinkId()).equals(String.valueOf(knowledgeGoodlinkCatMap.getGoodslinkId()))) {
+                       if (String.valueOf(goodlinkCatMap.getShopId()).equals(String.valueOf(knowledgeGoodlinkCatMap.getShopId()))){
+                           flag = true;
+                           list.remove(goodlinkCatMap.getKnowledgeId());
+                           break;
+                       }
+                    }
+                }
+                if (flag == false) {
+                    //如果没有就插入
+                    knowledgeGoodlinkCatMapMapper.insertKnowledgeGoodlinkCatMap(knowledgeGoodlinkCatMap);
+                }
+            }
+            for (String s : list) {
+                knowledgeGoodlinkCatMapMapper.deleteKnowledgeGoodlinkCatMapById(s);
             }
         }
         return tKnowledgeMapper.updateTKnowledge(tKnowledge);
@@ -282,8 +309,17 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
     public TKnowledge selectTKnowledgeRecent() {
         TKnowledge tKnowledge = tKnowledgeMapper.selecttknowledgeRecent();
         tKnowledge.setFactoryName(getFactoryName(tKnowledge.getProductFactory()));
-        KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap = knowledgeGoodlinkCatMapMapper.selectKnowledgeGoodlinkCatMapById(tKnowledge.getId());
-        tKnowledge.setKnowledgeGoodlinkCatMap(knowledgeGoodlinkCatMap);
+        List<KnowledgeGoodlinkCatMap> knowledgeGoodlinkCatMapList = knowledgeGoodlinkCatMapMapper.selectKnowledgeGoodlinkCatMapById(tKnowledge.getId());
+        if (knowledgeGoodlinkCatMapList != null && knowledgeGoodlinkCatMapList.size() != 0) {
+            tKnowledge.setKnowledgeGoodlinkCatMap(knowledgeGoodlinkCatMapList);
+            tKnowledge.setShopName(knowledgeGoodlinkCatMapList.get(0).getShopName());
+            tKnowledge.setShop_id(String.valueOf(knowledgeGoodlinkCatMapList.get(0).getShopId()));
+            StringBuffer factorys = new StringBuffer();
+            for (KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap : knowledgeGoodlinkCatMapList) {
+                factorys.append(knowledgeGoodlinkCatMap.getGoodslinkId()).append(",");
+            }
+            tKnowledge.setGoodlinkName(factorys.toString());
+        }
         return tKnowledge;
     }
 }

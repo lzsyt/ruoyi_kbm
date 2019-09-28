@@ -37,7 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         k.answer,
         k.product_name,
         k.image_path,
-        k.product_factory,
+        f.name as product_factory,
         k.shop_num,
         o.NAME,
         s.sort
@@ -45,6 +45,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         t_knowledge k
         LEFT JOIN t_org o ON k.data_org = o.data_org
         LEFT JOIN t_knowledge_sort s ON k.sort = s.id
+        LEFT JOIN t_product_factory f on  f.id=k.product_factory
         <where>
             <if test="ask != null  and ask != ''">
              and k.ask  like concat('%', #{ask},'%')
@@ -60,9 +61,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
              </if>
             <if test="productName != null  and productName != ''">
              and k.product_name like concat('%', #{productName}, '%')
+             or  k.id in (SELECT
+                map.knowledge_id
+                FROM
+                ( SELECT * FROM t_goods_link WHERE t_goods_link.title like concat('%', #{productName}, '%')  ) gk
+                INNER JOIN knowledge_goodlink_cat_map map ON map.goodslink_id=gk.num_iid)
              </if>
             <if test="productFactory != null  and productFactory != ''">
-             and k.product_factory like concat('%',  #{productFactory}, '%')
+             and f.name like concat('%',  #{productFactory}, '%')
              </if>
             <if test="sorts != null  and sorts.size  != ''">
                 and k.sort in
@@ -73,7 +79,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="keyword !=null and keyword !=''">
                 and (k.id like "%"#{keyword}"%" or k.answer like "%"#{keyword}"%" or k.ask like "%"#{keyword}"%" or
                 k.shop_Num like "%"#{keyword}"%" or k.product_Name like "%"#{keyword}"%"
-                or o.name like "%"#{keyword}"%" or s.sort like "%"#{keyword}"%")
+                or o.name like "%"#{keyword}"%" or s.sort like "%"#{keyword}"%") or f.name like "%"#{keyword}"%"
             </if>
         </where>
     </select>

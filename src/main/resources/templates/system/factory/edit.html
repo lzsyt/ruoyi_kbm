@@ -8,7 +8,7 @@
         <form class="form-horizontal m" id="form-factory-edit" th:object="${tProductFactory}">
             <input name="id" th:field="*{id}" type="hidden">
             <div class="form-group">    
-                <label class="col-sm-3 control-label">仓库名称：</label>
+                <label class="col-sm-3 control-label">厂家名称：</label>
                 <div class="col-sm-8">
                     <input name="name" th:field="*{name}" class="form-control" type="text">
                 </div>
@@ -19,7 +19,31 @@
     <script type="text/javascript">
         var prefix = ctx + "system/factory";
         $("#form-factory-edit").validate({
-            focusCleanup: true
+            focusCleanup: true,
+            rules:{
+                name:{
+                    minlength: 2,
+                    maxlength: 50,
+                    remote: {
+                        url: prefix + "/checknameUnique",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            name : function() {
+                                return $.common.trim($("#name").val());
+                            }
+                        },
+                        dataFilter: function(data, type) {
+                            return $.validate.unique(data);
+                        }
+                    }
+                },
+            },
+            messages: {
+                "name": {
+                    remote: "生产厂家已经存在"
+                }
+            }
         });
 
         function submitHandler() {

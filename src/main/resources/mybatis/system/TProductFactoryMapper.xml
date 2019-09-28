@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.kbm.mapper.TProductFactoryMapper">
+    
+    <resultMap type="TProductFactory" id="TProductFactoryResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+    </resultMap>
+
+    <sql id="selectTProductFactoryVo">
+        select id, name from t_product_factory
+    </sql>
+
+    <select id="selectTProductFactoryList" parameterType="TProductFactory" resultMap="TProductFactoryResult">
+        <include refid="selectTProductFactoryVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectTProductFactoryById" parameterType="Long" resultMap="TProductFactoryResult">
+        <include refid="selectTProductFactoryVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTProductFactory" parameterType="TProductFactory" useGeneratedKeys="true" keyProperty="id">
+        insert into t_product_factory
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null  and name != ''">name,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null  and name != ''">#{name},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTProductFactory" parameterType="TProductFactory">
+        update t_product_factory
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null  and name != ''">name = #{name},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTProductFactoryById" parameterType="Long">
+        delete from t_product_factory where id = #{id}
+    </delete>
+
+    <delete id="deleteTProductFactoryByIds" parameterType="String">
+        delete from t_product_factory where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    
+</mapper>
