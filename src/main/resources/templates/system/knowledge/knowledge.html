@@ -264,12 +264,15 @@
                 html.push(" <p>所属分类：" + highlighted(value) + "</p>");
             }
             if (key == "files") {
-                for (var i = 0; i < value.length; i++) {``
+                html.push("<div class='col-md-12'>");
+                for (var i = 0; i < value.length; i++) {
                     if (value[i].fileType=='1'){
                         html.push(" <div class=\"col-md-3 text-center\"> <img class=\"image img-rounded\"  onclick='showimg(\""+ value[i].filePath+"\")' src='" + value[i].filePath + "'  height='300px' width='300px'/></div>");
                     }else if (value[i].fileType=='2') {
                         html.push(" <div class=\"col-md-3 text-center\"><video controls=\"controls\" src='" + value[i].filePath + "'  height='300px' width='300px'/></div>");
                     }
+                    html.push("</div>");
+
                 }
 
 
@@ -282,7 +285,6 @@
     function showimg(path) {
         //$.table.imageView('http://demo.ruoyi.vip/img/profile.jpg');
         console.info("加载模态框数据");
-
         layer.open({
             title: false,
             type: 1,
