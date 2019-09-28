@@ -17,7 +17,7 @@
 </style>
 <body>
 <div class="main-content">
-    <form id="form-knowledge-edit" action="/system/knowledge/edit" method="post" class="form-horizontal"
+    <form id="form-knowledge-edit" th:action="@{/system/knowledge/edit}" method="post" class="form-horizontal"
           enctype="multipart/form-data">
         <input id="id" name="id" type="hidden" th:value="${tKnowledge.id}">
         <div class="row">
@@ -89,8 +89,19 @@
                 <div class="form-group">
                     <label class="col-sm-4 control-label">生产厂家：</label>
                     <div class="col-sm-8">
-                        <input id="productFactory" th:value="${tKnowledge.productFactory}" name="productFactory"
-                               class="form-control" type="text">
+                        <!--<input id="productFactory" th:value="${tKnowledge.productFactory}" name="productFactory"-->
+                               <!--class="form-control" type="text">-->
+                        <select class="form-control" name="productFactory" id="productFactory">
+                            <option th:if="${tKnowledge.productFactory==null||tKnowledge.productFactory==''}" value="" required>选择生产厂家</option>
+
+                            <option th:if="${tKnowledge.productFactory!=null && tKnowledge.productFactory!=''}"
+                                    th:value="${tKnowledge.productFactory}">[[${tKnowledge.factoryName}]]
+                            </option>
+                            <option th:each="factory : ${factorys}" th:value="${factory.id}"
+                                    th:text="${factory.name}">
+                            </option>
+                        </select>
+
                     </div>
                 </div>
             </div>
@@ -274,7 +285,6 @@
         </div>
     </div>
 </div>
-
 
 <div class="modal inmodal " id="videoModel" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">

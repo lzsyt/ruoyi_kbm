@@ -36,6 +36,10 @@ import java.util.List;
 public class TKnowledgeController extends BaseController {
     private String prefix = "system/knowledge";
 
+
+    @Autowired
+    private ITProductFactoryService itProductFactoryService;
+
     @Autowired
     private ITKnowledgeService tKnowledgeService;
     @Autowired
@@ -142,6 +146,7 @@ public class TKnowledgeController extends BaseController {
         modelMap.put("tshop", itShopService.selectTShopList(null));
         modelMap.put("goodlink", tGoodsLinkService.selectTGoodsLinkList(new TGoodsLink()));
         modelMap.put("goodcat", tSellerCatService.selectTSellerCatList(new TSellerCat()));
+        modelMap.put("factorys", itProductFactoryService.selectTProductFactoryList(new TProductFactory()));
         return prefix + "/add";
     }
 
@@ -218,6 +223,7 @@ public class TKnowledgeController extends BaseController {
         mmap.put("tshop", itShopService.selectTShopList(null));
         mmap.put("goodlink", tGoodsLinkService.selectTGoodsLinkList(new TGoodsLink()));
         mmap.put("goodcat", tSellerCatService.selectTSellerCatList(new TSellerCat()));
+        mmap.put("factorys", itProductFactoryService.selectTProductFactoryList(new TProductFactory()));
         return prefix + "/edit";
     }
 
@@ -245,7 +251,12 @@ public class TKnowledgeController extends BaseController {
         return toAjax(tKnowledgeService.deleteTKnowledgeByIds(ids));
     }
 
-
+    /**
+     * 下载
+     * @param strZipPath
+     * @return
+     * @throws IOException
+     */
     @RequestMapping("download")
     public ResponseEntity<byte[]> export(@RequestParam("filePath") String strZipPath) throws IOException {
 
@@ -260,6 +271,12 @@ public class TKnowledgeController extends BaseController {
         return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED);
     }
 
+
+    /**
+     * 删除文件
+     * @param id
+     * @return
+     */
     @RequestMapping("delfile")
     @ResponseBody
     public String delFile(@RequestParam("id") String id) {

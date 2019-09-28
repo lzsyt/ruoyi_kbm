@@ -82,6 +82,16 @@ public class TKnowledge extends BaseEntity
     private String sortName;
     private String orgName;
 
+    private String factoryName;
+
+    public String getFactoryName() {
+        return factoryName;
+    }
+
+    public void setFactoryName(String factoryName) {
+        this.factoryName = factoryName;
+    }
+
     public String getSortName() {
         return sortName;
     }

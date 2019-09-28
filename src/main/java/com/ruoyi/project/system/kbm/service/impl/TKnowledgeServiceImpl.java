@@ -36,7 +36,15 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
     @Resource
     private TKnownledgeFileMapper tKnownledgeFileMapper;
     @Resource
-    private TKeywordMapper tKeywordMapper;
+    private TProductFactoryMapper tProductFactoryMapper;
+
+
+    private String getFactoryName(String factoryId){
+        if (StringUtils.isNotEmpty(factoryId)) {
+            return tProductFactoryMapper.selectTProductFactoryById(Long.valueOf(factoryId)).getName();
+        }
+        return null;
+    }
 
 
     @Resource
@@ -157,6 +165,7 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
     @Override
     public TKnowledge selectTKnowledgeById(String id) {
         TKnowledge knowledge = tKnowledgeMapper.selectTKnowledgeById(id);
+        knowledge.setFactoryName(getFactoryName(knowledge.getProductFactory()));
         TKnownledgeFile tKnownledgeFile = new TKnownledgeFile();
         tKnownledgeFile.setKnowledgeId(id);
         knowledge.setFiles(tKnownledgeFileMapper.selectTKnownledgeFileList(tKnownledgeFile));
@@ -180,6 +189,7 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
 
 
         for (TKnowledge knowledge : knowledgeList) {
+            knowledge.setFactoryName(getFactoryName(knowledge.getProductFactory()));
             TKnownledgeFile tKnownledgeFile = new TKnownledgeFile();
             tKnownledgeFile.setKnowledgeId(knowledge.getId());
             knowledge.setFiles(tKnownledgeFileMapper.selectTKnownledgeFileList(tKnownledgeFile));
@@ -273,6 +283,7 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
     @Override
     public TKnowledge selectTKnowledgeRecent() {
         TKnowledge tKnowledge = tKnowledgeMapper.selecttknowledgeRecent();
+        tKnowledge.setFactoryName(getFactoryName(tKnowledge.getProductFactory()));
         KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap = knowledgeGoodlinkCatMapMapper.selectKnowledgeGoodlinkCatMapById(tKnowledge.getId());
         tKnowledge.setKnowledgeGoodlinkCatMap(knowledgeGoodlinkCatMap);
         return tKnowledge;
