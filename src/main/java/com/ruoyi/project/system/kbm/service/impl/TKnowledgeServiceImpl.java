@@ -186,8 +186,6 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
     public List<TKnowledge> selectTKnowledgeList(TKnowledge tKnowledge) {
         List<TKnowledge> knowledgeList = tKnowledgeMapper.selectTKnowledgeList(tKnowledge);
 
-
-
         for (TKnowledge knowledge : knowledgeList) {
             knowledge.setFactoryName(getFactoryName(knowledge.getProductFactory()));
             TKnownledgeFile tKnownledgeFile = new TKnownledgeFile();
