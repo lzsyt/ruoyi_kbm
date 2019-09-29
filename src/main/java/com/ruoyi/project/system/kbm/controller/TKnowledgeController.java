@@ -183,14 +183,14 @@ public class TKnowledgeController extends BaseController {
         tKnowledge.setAsk(ask);
         tKnowledge.setAnswer(answer);
         tKnowledge.setDataOrg(dataOrg);
-        if (goodslinkId != null && goodslinkId.size() != 0) {
+        if (goodslinkId != null && goodslinkId.size() >0) {
             List<KnowledgeGoodlinkCatMap> knowledgeGoodlinkCatMapList = new ArrayList<>();
             for (String s : goodslinkId) {
                 KnowledgeGoodlinkCatMap knowledgeGoodlinkCatMap = new KnowledgeGoodlinkCatMap();
                 if (StringUtils.isNotEmpty(shopid)) {
                     knowledgeGoodlinkCatMap.setShopId(Integer.valueOf(shopid));
                 }
-                if (StringUtils.isNotEmpty(goodslinkId)) {
+                if (StringUtils.isNotEmpty(s)) {
                     knowledgeGoodlinkCatMap.setGoodslinkId(Long.valueOf(s));
                 }
                 knowledgeGoodlinkCatMapList.add(knowledgeGoodlinkCatMap);
@@ -305,6 +305,10 @@ public class TKnowledgeController extends BaseController {
     @ResponseBody
     public String delFile(@RequestParam("id") String id) {
         return knownledgeFileService.deleteTKnownledgeFileById(id) > 0 ? "0" : "1";
+    }
+
+    public static void main(String[] args) {
+        System.out.println("dsadas");
     }
 
 

@@ -3,6 +3,9 @@
 <head>
     <th:block th:include="include :: header('知识库列表')"/>
     <th:block th:include="include :: layout-latest-css"/>
+    <th:block th:include="include :: select2-css" />
+    <th:block th:include="include :: bootstrap-select-css" />
+
     <style>
         .huanghang {
             white-space: pre-wrap;
@@ -41,18 +44,23 @@
                             <p>产品名称：</p>
                             <input type="text" name="productName"/>
                         </li>
-                        <li>
-                            <p>生产厂家：</p>
-                            <select name="productFactory">
-                                <option value="">生产厂家</option>
-                                <option th:each="factory : ${factorys}" th:value="${factory.getName()}"
-                                        th:text="${factory.getName()}">
-                                </option>
-                            </select>
-                        </li>
+
+
+
                         <li>
                             <p>关键字：</p>
                             <input type="text" name="keyword" id="keyword"/>
+                        </li>
+                        <li style="width: 250px">
+
+
+                            <select class="form-control" style="float: left" name="productFactory">
+                                <option value="">选择生产厂家</option>
+                                <option th:each="factory : ${factorys}" th:value="${factory.getId()}"
+                                        th:text="${factory.getName()}">
+                                </option>
+                            </select>
+
                         </li>
                         <li id="sorts">
                             <label th:each="sorts:${sorts}" class="check-box">
@@ -111,6 +119,9 @@
 
 <th:block th:include="include :: footer"/>
 <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+<th:block th:include="include :: select2-js" />
+<th:block th:include="include :: bootstrap-select-js" />
+
 <script th:inline="javascript">
     var editFlag = [[${@permission.hasPermi('system:knowledge:edit')}]];
     var removeFlag = [[${@permission.hasPermi('system:knowledge:remove')}]];
@@ -173,19 +184,19 @@
 
         var options = {
             url: prefix + "/list",
+            uniqueId: "id",//每一行的唯一标识，一般为主键列
             createUrl: prefix + "/add",
             updateUrl: prefix + "/edit/{id}",
             removeUrl: prefix + "/remove",
             exportUrl: prefix + "/export",
             detailView: true,
-
             detailFormatter: detailFormatter,
             // onClickRow: onClickRow,
             modalName: "知识库",
-            uniqueId: "id",//每一行的唯一标识，一般为主键列
             columns: [{
                 checkbox: true
             },
+
                 {
                     field: 'productName',
                     title: '产品名称',
@@ -271,9 +282,10 @@
                     }else if (value[i].fileType=='2') {
                         html.push(" <div class=\"col-md-3 text-center\"><video controls=\"controls\" src='" + value[i].filePath + "'  height='300px' width='300px'/></div>");
                     }
-                    html.push("</div>");
+
 
                 }
+                html.push("</div>");
 
 
             }
@@ -284,7 +296,7 @@
 
     function showimg(path) {
         //$.table.imageView('http://demo.ruoyi.vip/img/profile.jpg');
-        console.info("加载模态框数据");
+        console.info("加载模态框数据"+path);
         layer.open({
             title: false,
             type: 1,
