@@ -3,10 +3,7 @@ package com.ruoyi.project.system.kbm.service.impl;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.text.Convert;
-import com.ruoyi.project.system.kbm.domain.KnowledgeGoodlinkCatMap;
-import com.ruoyi.project.system.kbm.domain.TKeyword;
-import com.ruoyi.project.system.kbm.domain.TKnowledge;
-import com.ruoyi.project.system.kbm.domain.TKnownledgeFile;
+import com.ruoyi.project.system.kbm.domain.*;
 import com.ruoyi.project.system.kbm.mapper.*;
 import com.ruoyi.project.system.kbm.service.ITKnowledgeService;
 import net.bytebuddy.asm.Advice;
@@ -18,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.sound.midi.Soundbank;
 import java.io.IOException;
 import java.util.*;
 
@@ -39,7 +37,15 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
 
     private String getFactoryName(String factoryId) {
         if (StringUtils.isNotEmpty(factoryId)) {
-            return tProductFactoryMapper.selectTProductFactoryById(Long.valueOf(factoryId)).getName();
+
+              TProductFactory factory= tProductFactoryMapper.selectTProductFactoryById(Long.valueOf(factoryId));
+              if (factory!=null){
+
+                  return tProductFactoryMapper.selectTProductFactoryById(Long.valueOf(factoryId)).getName();
+
+              }
+
+
         }
         return null;
     }
@@ -163,7 +169,16 @@ public class TKnowledgeServiceImpl implements ITKnowledgeService {
     @Override
     public TKnowledge selectTKnowledgeById(String id) {
         TKnowledge knowledge = tKnowledgeMapper.selectTKnowledgeById(id);
-        knowledge.setFactoryName(getFactoryName(knowledge.getProductFactory()));
+        if(StringUtils.isNotEmpty(knowledge.getProductFactory())){
+            String name=getFactoryName(knowledge.getProductFactory());
+            if (StringUtils.isNotEmpty(name)){
+                System.out.println("getProductFactory:"+knowledge.getProductFactory());
+
+                knowledge.setFactoryName(name);
+            }
+
+
+        }
         TKnownledgeFile tKnownledgeFile = new TKnownledgeFile();
         tKnownledgeFile.setKnowledgeId(id);
         knowledge.setFiles(tKnownledgeFileMapper.selectTKnownledgeFileList(tKnownledgeFile));
