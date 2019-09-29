@@ -37,7 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         k.answer,
         k.product_name,
         k.image_path,
-        f.name as product_factory,
+        k.product_factory as product_factory,
         k.shop_num,
         o.NAME,
         s.sort
